@@ -1,0 +1,20 @@
+{
+	"product": {
+		"page_title": "產品基本資料",
+		"add_overlay": {
+			"title": "新增品號資料"
+		},
+		"inspect_overlay": {
+			"title": "檢驗項目預設值"
+		}
+	},
+	"report": {
+		"page_title": "檢驗報告管理",
+		"preview_inspect": {
+			"title": "產品檢驗資料"
+		},
+		"add_report": {
+			"title": "檢驗報告基本資料"
+		}
+	}
+}

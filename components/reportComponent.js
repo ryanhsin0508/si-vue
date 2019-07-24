@@ -1,0 +1,69 @@
+var reportData = getData('Api/reportList/', 'post', '');
+var aData = getData('Api/mb001/P11/', 'post', '');
+console.log(reportData)
+console.log(aData)
+var overlayData;
+var stringsData = getString();
+// var reportData = JSON.parse(reportData);
+var titleArr = [
+  ['更新時間', 'create_dt'],
+  ['產品名稱', 6],
+  ['批號', 1],
+  ['報告編號', 3],
+  ['報告日期', 2],
+  ['檢驗日期', 10]
+];
+var widthArr = [];
+
+Vue.component('reportComponent', {
+  props: ['updatePager'],
+  mixins: [tableMixin],
+  data() {
+    return {
+      list: reportData,
+      titleArr,
+      itemFrom: 0,
+      itemTo: 14,
+      pager: 0
+    }
+  },
+  template: `
+  <div class="width-limiter">
+    <div class="heading">
+      <h2>檢驗報告管理</h2>
+      <a class="btn btn-add" href="javascript:;" @click="$emit('overlay', 'addReport', '')">新增</a>
+    </div>
+    <table class="table-st1">
+      <thead>
+      <tr>
+        <th v-for="(arr, index) in titleArr">{{titleArr[index][0]}}</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item, index) in list">
+          <td v-for="(arr, index) in titleArr">
+            <template v-if="titleArr[index][1] == 'create_dt'">{{item[titleArr[index][1]] | date}}</template>
+            <template v-else>{{item[titleArr[index][1]]}}</template>
+          </td>
+          <td>
+            <a href="javascript:;" @click="$emit('overlay', 'previewInspect', item)">預覽</a>
+            <a href="javascript:;" @click="$emit('overlay', 'addReport', item)">編輯</a>
+            <a href="javascript:;" @click="$emit('overlay', 'previewInspect', item)">預覽</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  `,
+  methods: {
+    test() {
+      alert('asd')
+      this.$emit('test')
+    }
+  },
+  computed: {
+
+  },
+  mounted() {}
+});

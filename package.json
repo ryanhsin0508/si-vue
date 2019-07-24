@@ -1,0 +1,31 @@
+{
+  "name": "scss",
+  "version": "1.0.0",
+  "description": "What is CodeIgniter\r ###################",
+  "main": "gulpfile.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "autoprefixer": "^9.6.1",
+    "cssnano": "^4.1.10",
+    "gulp": "^4.0.2",
+    "gulp-sass": "^4.0.2",
+    "gulp-postcss": "^8.0.0",
+    "gulp-sourcemaps": "^2.6.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/efit1/si.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/efit1/si/issues"
+  },
+  "homepage": "https://gitlab.com/efit1/si#readme"
+}
