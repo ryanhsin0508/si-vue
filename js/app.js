@@ -99,7 +99,7 @@ var formMixin = {
         for (let i in titleArr) {
           arr.push(`${titleArr[i][1]}=${this.formData[titleArr[i][1]]}`)
         }
-        for(let i in inspectArr){
+        for (let i in inspectArr) {
           let listKey = inspectArr[i][1];
           arr.push(`detail[1][${listKey}]=${this.formData[listKey]}`)
         }
@@ -158,10 +158,10 @@ var formMixin = {
         })
       }
 
-      
-      
+
+
     },
-    sendAPI(e){
+    sendAPI(e) {
 
     }
   },
@@ -171,18 +171,18 @@ var formMixin = {
   mounted() {
     let that = this;
     // this.addRow();
-    $('.date-single').each(function(i){
+    $('.date-single').each(function(i) {
       let name = $(this).attr('name');
       $(this).dateRangePicker({
-      autoClose: true,
-      singleDate: true,
-      showShortcuts: false,
-      singleMonth: true,
-      format: 'YYYYMMDD',
-      setValue:function(s){
-        that.formData[name] = s;
-      }
-    })
+        autoClose: true,
+        singleDate: true,
+        showShortcuts: false,
+        singleMonth: true,
+        format: 'YYYYMMDD',
+        setValue: function(s) {
+          that.formData[name] = s;
+        }
+      })
     })
   }
 }

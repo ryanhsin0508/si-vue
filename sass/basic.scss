@@ -833,7 +833,9 @@ input[type=text] {
     li {
       position: relative;
       display: flex;
-
+      >*{
+        flex-shrink: 0;
+      }
       .ttl {
         display: flex;
         align-items: center;
