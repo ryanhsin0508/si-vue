@@ -15,6 +15,9 @@
 		},
 		"add_report": {
 			"title": "檢驗報告基本資料"
+		},
+		"del_report": {
+			"title": "刪除檢驗報告"
 		}
 	}
 }

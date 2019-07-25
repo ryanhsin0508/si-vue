@@ -47,9 +47,11 @@ Vue.component('reportComponent', {
             <template v-else>{{item[titleArr[index][1]]}}</template>
           </td>
           <td>
-            <a href="javascript:;" @click="$emit('overlay', 'previewInspect', item)">預覽</a>
-            <a href="javascript:;" @click="$emit('overlay', 'addReport', item)">編輯</a>
-            <a href="javascript:;" @click="$emit('overlay', 'previewInspect', item)">預覽</a>
+            <ul class="btns flex">
+              <li><a class="btn-box gray small" href="javascript:;" @click="$emit('overlay', 'previewInspect', item)">預覽</a></li>
+              <li><a class="btn-box blue small"  href="javascript:;" @click="$emit('overlay', 'addReport', item)">編輯</a></li>
+              <li><a class="btn-box red small"  href="javascript:;" @click="$emit('overlay', 'delReport', item['p_number']+'/'+ item['b_number']+'/'+item['s_number'])">刪除</a></li>
+            </ul>
           </td>
         </tr>
       </tbody>
@@ -57,10 +59,7 @@ Vue.component('reportComponent', {
   </div>
   `,
   methods: {
-    test() {
-      alert('asd')
-      this.$emit('test')
-    }
+    
   },
   computed: {
 

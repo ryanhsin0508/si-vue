@@ -16,6 +16,8 @@ Vue.component('modal', {
               <inspect-items-component v-if="overlayData.type == 'inspectItems'" :info="overlayData.info"></inspect-items-component>
               <preview-inspect-component v-if="overlayData.type == 'previewInspect'" :info="overlayData.info"></preview-inspect-component>
               <add-report-component v-if="overlayData.type == 'addReport'" :info="overlayData.info ? overlayData.info : ''"></add-report-component>
+              <alert-msg-component v-if="overlayData.type == 'delReport'" @close="$emit('close')" :info="overlayData.info"></alert-msg-component>
+
             </div>
 
             
@@ -178,7 +180,7 @@ Vue.component('addReportComponent', {
 
       overlayData: {},
       basicProps: {
-        active: false
+        active: this.info ? false : true
       },
       inspectProps: {
         active: true
@@ -187,8 +189,8 @@ Vue.component('addReportComponent', {
         ['品號', 'p_number'],
         ['批號', 'b_number'],
         ['報告編號', 's_number'],
-        ['報告日期', 'reportdt'],
-        ['檢驗日期', 'examinedt'],
+        ['報告日期', 'reportdt','date'],
+        ['檢驗日期', 'examinedt','date'],
         ['有效日期', 'e_day'],
         ['緊急送件', 'urgent']
       ],
@@ -217,8 +219,8 @@ Vue.component('addReportComponent', {
     }
   },
   template: `
-    <form action="/si/Api/infoadd" class="form-st1" method="post" @submit.prevent="onSubmit">
-      <h2 :class="{active : basicProps.active}">基本資料</h2>
+    <form action="/si/Api/infoadd" class="form-st1" method="post" @submit.prevent="onSubmit" enctype="multipart/form-data">
+      <h2 class="accor-ttl" :class="{active : basicProps.active}" @click="toggleActive('basicProps')">基本資料</h2>
       <div class="content">
         <div class="custom-input">
           <ul>
@@ -227,7 +229,9 @@ Vue.component('addReportComponent', {
               <input
                 type="text"
                 v-model="formData[item[1]]"
-                :disabled="info != '' && (item[1] == 'p_number' || item[1] == 'b_number' || item[1] == 's_number')"
+                :name="item[1]"
+                :class="item[2] ? item[2]+'-single' : ''"
+                :data-aaa="info != '' && (item[1] == 'p_number' || item[1] == 'b_number' || item[1] == 's_number')"
                 :required="item[1] == 'p_number' || item[1] == 'b_number' || item[1] == 's_number'"
                 @keydown="keyDown"
                 @keyup="keyUp(item[1])"
@@ -238,31 +242,33 @@ Vue.component('addReportComponent', {
                 </li>
               </ul>
             </li>
-            <li><input type="file" name="image" class="projectfile" value="" /></li>
+            <li><input type="file" name="img" class="file" multiple data-show-upload="false" data-show-caption="true" /></li>
           </ul>
         </div>
       </div>
       <ul class="btns overlay-submit-btns">
         <li><button class="btn-box blue" type="submit">儲存</button></li>
       </ul>
-      <h2 :class="{active : inspectProps.active}">檢驗項目</h2>
+      <h2 class="accor-ttl" :class="{active : inspectProps.active}" @click="toggleActive('inspectProps')">檢驗項目</h2>
       <div class="content">
         <div class="custom-input">
           <ul>
             <li v-for="item in inspectTitleArr">
               <h3 class="ttl">{{item[0]}}</h3>
               <input
+                :name="'detail[1]['+item[1]+']'"
                 type="text"
                 v-model="formData[item[1]]"
                 @keydown="keyDown"
                 @keyup="keyUp(item[1])"
+                required
               />
             </li>
           </ul>
         </div>
         <ul class="btns flex pl10 pb10">
-          <li><button class="btn-box blue" @click.prevent="addRow()">新增檢驗值</button></li>
-          <li><button class="btn-box blue" @click.prevent="defInspectItems">帶入預設檢驗品項</button></li>
+          <li><button class="btn-box green" @click.prevent="addRow()">新增檢驗值</button></li>
+          <li><button class="btn-box green" @click.prevent="defInspectItems">帶入預設檢驗品項</button></li>
         </ul>
         
         <div class="form-table">
@@ -277,7 +283,10 @@ Vue.component('addReportComponent', {
             <tbody>
               <tr v-for="(inspectItem, index) in overlayData">
                 <td v-for="item in inspectTableTitleArr">
-                  <input type="text" name="" v-model="inspectItem[item[1]]">
+                  <input
+                  type="text"
+                  :name="'detail[' + parseInt(Number(index)+1) + '][' + item[1] + ']'"
+                  v-model="inspectItem[item[1]]">
                 </td>
                 <td>
                   <button><i class="fas fa-eye"></i></button>
@@ -294,15 +303,24 @@ Vue.component('addReportComponent', {
     </form>
   `,
   methods: {
+    toggleActive(t){
+      let status = this[t].active ? false : true;
+      this[t].active = status;
+
+    },
     selectCandidate(target, val) {
       this.formData[target] = val;
       this.candi_p = [];
     },
     defInspectItems(){
       let arr = getData('Api/exdelist/' + this.info[0], 'post' + this.info[0], '')
+      let len = arr.length;
+      this.overlayData.pop()
       for(i in arr){
-        this.overlayData.push(arr[i])
+        this.overlayData.splice(len-1, 0, arr[i])
       }
+      this.addRow();
+      this.defInspectItems = ()=>{};
       // this.overlayData.push(getData('Api/exdelist/' + this.info[0], 'post' + this.info[0], ''))
     },
     keyDown() {
@@ -350,7 +368,33 @@ Vue.component('addReportComponent', {
   }
 })
 Vue.component('alertMsgComponent', {
+  props:['info'],
   template: `
-    
-  `
+    <div>
+      <h2>確認刪除檢驗報告？</h2>
+      <ul class="btns flex end">
+        <li><a href="javascript:;" class="btn-box darkgray" @click="deleteReport(info)">YES</a></li>
+        <li><a href="javascript:;" class="btn-box darkgray"  @click="$emit('close')">NO</a></li>
+      </ul>
+    </div>
+  `,
+  methods:{
+    deleteReport(a) {
+      let token = getToken();
+      console.log(`${apiHost}Api/delinfodetail/${a}`)
+      $.ajax({
+        url: `${apiHost}Api/delinfodetail/${a}`,
+        method: "DELETE",
+        contentType: "application/json; charset=utf-8",
+        cache: false,
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+        },
+        success: function (data) {
+          location.reload();
+          // getInList(mb001);
+        }
+      });
+    }
+  }
 })
