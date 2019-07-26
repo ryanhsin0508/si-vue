@@ -1,36 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8">
-	<title>檢驗系統</title>
-	<link rel="stylesheet" href="css/reset.css">
-	<link rel="stylesheet" href="css/basic.css">
-	<link rel="stylesheet" href="css/app.css">
-	<script src="js/jquery.min.js"></script>
-	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
-	<script src="js/common.js"></script>
-	<script src="js/vue.js"></script>
-	<script src="js/app.js"></script>
-	<script src="components/headerComponent.js"></script>
-	<script src="components/itemComponent.js"></script>
-	<script src="js/store.js"></script>
-	<style></style>
+  <meta charset="UTF-8">
+  <title>檢驗系統</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/fileinput.css">
+  <link rel="stylesheet" href="css/all.css">
+  <link rel="stylesheet" href="css/basic.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="css/daterangepicker.css">
+  <script src="js/jquery.min.js"></script>
+  <script src="js/jquery.dataTables.min.js"></script>
+  <script src="js/moment.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.1.1/pdfobject.min.js"></script>
+  <script src="js/jquery.daterangepicker.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/fileinput.min.js"></script>
+  <script src="js/fileinput_zh-tw.js"></script>
+  <script src="js/vue.js"></script>
+  <script src="js/app.js"></script>
+  <script src="components/headerComponent.js"></script>
+  <script src="components/overlayComponent.js"></script>
+  <script src="components/itemComponent.js"></script>
 </head>
+
 <body>
-	<section id="app" class="wrap">
-		<header-component></header-component>
-		<button @click="showOverlay = true">Show Modal</button>
-		  <!-- use the modal component, pass in the prop -->
-		  <modal v-if="showOverlay" @close="showOverlay = false" >
-		    <!--
-		      you can use custom content here to overwrite
-		      default content
-		    -->
-		    <h3 slot="header">custom header</h3>
-		  </modal>
-		<item-component></item-component>
-		<overlay-component></overlay-component>
-	</section>
+  <section id="app" class="wrap">
+    <header-component></header-component>
+    <item-component @overlay="showOverlay"></item-component>
+    <modal v-if="overlayVisible" @close="overlayVisible=false" :overlay-data="overlayData"></modal>
+
+  </section>
 </body>
+
 </html>

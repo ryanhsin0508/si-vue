@@ -9,11 +9,11 @@
   <link rel="stylesheet" href="css/all.css">
   <link rel="stylesheet" href="css/basic.css">
   <link rel="stylesheet" href="css/app.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="css/daterangepicker.css">
   <script src="js/jquery.min.js"></script>
   <script src="js/jquery.dataTables.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.16.0/moment.min.js" type="text/javascript"></script>
+  <script src="js/moment.min.js" type="text/javascript"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.1.1/pdfobject.min.js"></script>
   <script src="js/jquery.daterangepicker.js"></script>
   <script src="js/common.js"></script>
@@ -23,14 +23,14 @@
   <script src="js/app.js"></script>
   <script src="components/headerComponent.js"></script>
   <script src="components/overlayComponent.js"></script>
-  <script src="components/reportComponent.js"></script>
+  <script src="components/postComponent.js"></script>
 </head>
 
-<body>
+<body class="page-post">
   <section id="app" class="wrap">
     <header-component></header-component>
-    <report-component @overlay="showOverlay"></report-component>
-    <modal v-if="overlayVisible" @close="overlayVisible=false" :overlay-data="overlayData"></modal>
+    <post-component></post-component>
+    <!-- <modal v-if="overlayVisible" @close="overlayVisible=false" :overlay-data="overlayData"></modal> -->
 
   </section>
 </body>

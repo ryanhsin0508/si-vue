@@ -59,7 +59,10 @@ Vue.component('reportComponent', {
   </div>
   `,
   methods: {
-    
+    showInfo(info){
+      console.log(`${host}post.html${info['p_number']}/${info['b_number']}/${info['s_number']}`)
+      location.href=`${host}post.html?api=${info['p_number']}/${info['b_number']}/${info['s_number']}`
+    }
   },
   computed: {
 

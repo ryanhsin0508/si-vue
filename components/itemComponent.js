@@ -2,67 +2,62 @@ var productData = getData('Api/invmb/', 'Api/invmb', '');
 var overlayData;
 var stringsData = getString();
 // var productData = JSON.parse(productData);
-var titleArr = [['更新時間',7],['產品名稱',1],['產品規格',2],['產品號碼',0]];
+var titleArr = [
+  ['更新時間', 7],
+  ['產品名稱', 1],
+  ['產品規格', 2],
+  ['產品號碼', 0]
+];
+var widthArr = [];
 
 Vue.component('itemComponent', {
-  props:['updatePager'],
+  props: ['updatePager'],
+  mixins: [tableMixin],
   data() {
     return {
       list: productData,
       titleArr,
-      itemFrom:0,
-      itemTo:14,
-      pager:0
+      itemFrom: 0,
+      itemTo: 14,
+      pager: 0
     }
   },
   template: `
   <div class="width-limiter">
     <div class="heading">
-      
+      <h2>檢驗資料明細</h2>
     </div>
     <table class="table-st1">
       <thead>
       <tr>
-        <th v-for="(arr, index) in titleArr">{{titleArr[index][0]}}</th>
+        <th v-for="(arr, index) in titleArr" width="20%">{{titleArr[index][0]}}</th>
         <th>檢驗預設值</th>
       </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in list" v-if="index < 100">
-          <td v-for="(arr, index) in titleArr">{{item[titleArr[index][1]]}}</td>
-          <td><a href="javascript:;" @click="showOverlay(item[0])">{{item[0]}}</a></td>
+        <tr v-for="(item, index) in list" v-if="item[1]">
+          <td v-for="(arr, index) in titleArr">
+            <template v-if="titleArr[index][1] == '7'">{{item[titleArr[index][1]] | date}}</template>
+            <template v-else>{{item[titleArr[index][1]]}}</template>
+          </td>
+          <td><a href="javascript:;" @click="$emit('overlay', 'inspectItems', item)"><i class="fa fa-database fa-2x"></i></a></td>
         </tr>
       </tbody>
     </table>
   </div>
   `,
-  methods:{
-    say(){
+  methods: {
+    test() {
       alert('asd')
-    },
-    showOverlay(id){
-      overlayData = getData('Api/exdelist/' + id, 'Api/exdelist/' + id, '');
-      console.log(overlayData)
+      this.$emit('test')
     }
   },
-  computed:{
+  computed: {
 
   },
-  mounted(){
-    $('.table-st1').DataTable( {
-            "order": [[ 0, "desc" ]],
-            "lengthMenu": [[15, 50, 100, -1], [15, 50, 100, "All"]]
-        } );
+  mounted() {
+    console.log('ooo')
+    
+    
   }
 });
-
-Vue.component('overlayComponent',{
-  data(){
-    return{
-      data:overlayData
-    }
-  },
-  template:`
-
-  `
-})

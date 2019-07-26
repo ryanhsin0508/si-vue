@@ -16,7 +16,7 @@ Vue.component('headerComponent', {
           <ul>
             <li><a href="${host}product.html">產品資訊</a></li>
             <li><a href="${host}report.html">檢驗報告</a></li>
-            <li><a href="${host}info.html">檢驗資料</a></li>
+            <li><a href="${host}item.html">檢驗資料</a></li>
           </ul>
         </div>
       </nav>

@@ -2,7 +2,7 @@ Vue.component('modal', {
   props: ['overlayData'],
   template: `
 <transition name="modal">
-  <div class="modal-mask">
+  <div class="modal-mask" @click="$emit('close')">
     <div class="modal-wrapper">
       <div class="modal-container" @click.stop>
 
@@ -17,6 +17,7 @@ Vue.component('modal', {
           <preview-inspect-component v-if="overlayData.type == 'previewInspect'" :info="overlayData.info"></preview-inspect-component>
           <add-report-component v-if="overlayData.type == 'addReport'" :info="overlayData.info ? overlayData.info : ''"></add-report-component>
           <alert-msg-component v-if="overlayData.type == 'delReport'" @close="$emit('close')" :info="overlayData.info"></alert-msg-component>
+          <success-msg-component v-if="overlayData.type == 'success'"></success-msg-component>
 
         </div>
 
@@ -111,7 +112,7 @@ Vue.component('inspectItemsComponent', {
           </tbody>
         </table>
         <ul class="btns pl10 pr10 flex between">
-          <li><button class="btn-box green" @click.prevent="addRow()">輸入檢驗品項</button></li>
+          <li><button class="btn-box green" @click.prevent="addRow(titleArr)">新增檢驗品項</button></li>
           <li><button class="btn-box blue" type="submit">儲存</button></li>
         </ul>
       </div>
@@ -121,6 +122,9 @@ Vue.component('inspectItemsComponent', {
   beforeMount() {
     //inspectItemsComponent
     this.overlayData = getData('Api/exdelist/' + this.info[0], 'post' + this.info[0], '')
+  },
+  mounted(){
+    this.addRow(this.titleArr)
   }
 })
 Vue.component('previewInspectComponent', {
@@ -212,7 +216,8 @@ Vue.component('addReportComponent', {
         ['單位', 'unit'],
         ['上標', 'upper'],
         ['下標', 'lower'],
-        ['金額', 'amount']
+        ['金額', 'amount'],
+        ['','show']
       ],
       timer: '',
       candi_p: []
@@ -224,14 +229,15 @@ Vue.component('addReportComponent', {
     <div class="content">
       <div class="custom-input" style="float:left;">
         <ul>
-          <li v-for="item in titleArr">
+          <li v-for="item in titleArr" :class="item[1] == 'urgent' ? 'custom-checkbox' : ''">
             <h3 class="ttl">{{item[0]}}</h3>
             <input
-            type="text"
             v-model="formData[item[1]]"
+            :type="item[1] == 'urgent' ? 'checkbox' : 'text'"
             :name="item[1]"
             :class="item[2] ? item[2]+'-single' : ''"
-            :data-aaa="info != '' && (item[1] == 'p_number' || item[1] == 'b_number' || item[1] == 's_number')"
+            :autocomplete="item[2] ? 'off' : 'on'"
+            :readonly="info != '' && (item[1] == 'p_number' || item[1] == 'b_number' || item[1] == 's_number')"
             :required="item[1] == 'p_number' || item[1] == 'b_number' || item[1] == 's_number'"
             @keydown="keyDown"
             @keyup="keyUp(item[1])"
@@ -242,11 +248,14 @@ Vue.component('addReportComponent', {
               </li>
             </ul>
           </li>
-          <li><input type="file" name="img" class="file" multiple data-show-upload="false" data-show-caption="true" /></li>
+          <li>
+            <h3 class="ttl">報告掃描檔</h3>
+            <input type="file" name="img" class="file-input" multiple data-show-upload="false" data-show-caption="true" />
+          </li>
         </ul>
       </div>
-      <div class="img-preview" style="float:right;height:360px;">
-
+      <div class="img-preview" style="float:right;">
+        <div class="show" style="height:360px;"></div>
       </div>
     </div>
     <ul class="btns overlay-submit-btns">
@@ -270,7 +279,7 @@ Vue.component('addReportComponent', {
         </ul>
       </div>
       <ul class="btns flex pl10 pb10">
-        <li><button class="btn-box green" @click.prevent="addRow()">新增檢驗值</button></li>
+        <li><button class="btn-box green" @click.prevent="addRow(inspectTableTitleArr)">新增檢驗值</button></li>
         <li><button class="btn-box green" @click.prevent="defInspectItems">帶入預設檢驗品項</button></li>
       </ul>
 
@@ -278,7 +287,7 @@ Vue.component('addReportComponent', {
         <table class="table-input">
           <thead>
             <tr class="grid6 check-same">
-              <th v-for="(item, index) in inspectTableTitleArr">
+              <th v-for="(item, index) in inspectTableTitleArr" v-if="item[1] != 'show'">
                 <template v-if="index != 0">
                   <input :id="item[1]" :value="item[1]" type="checkbox" v-model="sameVal" />
                   <label :for="item[1]">項目一致</label>
@@ -287,21 +296,26 @@ Vue.component('addReportComponent', {
             </tr>
             <tr class="grid6">
 
-              <th v-for="item in inspectTableTitleArr">
+              <th v-for="item in inspectTableTitleArr" v-if="item[1] != 'show'"">
                 {{item[0]}}
               </th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(inspectItem, index) in overlayData">
-              <td v-for="item in inspectTableTitleArr">
+              <td v-for="item in inspectTableTitleArr" v-if="item[1] != 'show'"">
                 <input
                 type="text"
                 :name="'detail[' + parseInt(Number(index)+1) + '][' + item[1] + ']'"
                 v-model="inspectItem[item[1]]">
               </td>
               <td>
-                <button><i class="fas fa-eye"></i></button>
+                <button 
+                  
+                  class="btn-show"
+                  @click.prevent="inspectItem['show'] == 'y' ? inspectItem['show'] = 'n' : inspectItem['show'] = 'y'">
+                  <i class="fas" :class="inspectItem['show'] == 'y' ? 'fa-eye' : 'fa-eye-slash'" ></i>
+                </button>
                 <button 
                 @click.prevent="overlayData.splice(index, 1)"
                 ><i class="fas fa-trash-alt"></i></button>
@@ -331,7 +345,7 @@ Vue.component('addReportComponent', {
       for (i in arr) {
         this.overlayData.splice(len - 1, 0, arr[i])
       }
-      this.addRow();
+      this.addRow(titleArr);
       this.defInspectItems = () => {};
       // this.overlayData.push(getData('Api/exdelist/' + this.info[0], 'post' + this.info[0], ''))
     },
@@ -356,7 +370,7 @@ Vue.component('addReportComponent', {
         }, 500)
       }
     },
-    checkTyping(lastTime) {
+    checkTyping() {
 
     }
   },
@@ -367,7 +381,22 @@ Vue.component('addReportComponent', {
       this.formData = this.overlayData[0]
     }
   },
+  updated(){
+    //convert true / false to digit
+
+    this.formData.urgent = this.formData.urgent ? +this.formData.urgent : 0;
+    // console.log(this.formData.urgent)
+  },
+  computed:{
+    
+  },
   mounted() {
+    this.addRow(this.inspectTableTitleArr)
+    $('.file-input').fileinput({
+        theme: 'fa',
+        uploadUrl: '#',
+        allowedFileExtensions: ['jpg', 'pdf']
+    })
     let projectfileoptions = {
       showUpload: false,
       showRemove: false,
@@ -376,21 +405,56 @@ Vue.component('addReportComponent', {
       allowedFileExtensions: ['jpg', 'png', 'gif'],
       maxFileSize: 2000,
     }
+    
     if (this.formData.filename) {
       let url = this.formData.filename;
-      console.log(`${apiHost}uploads/${url}`)
-      let opt = {
-        pdfOpenParams: {
-          pagemode: "thumbs",
-          navpanes: 0,
-          toolbar: 0,
-          statusbar: 0,
-          view: "FitV"
+      
+      let ext = url.substr(url.lastIndexOf('.')+1);
+      console.log(ext)
+      if(ext == 'pdf'){
+        let opt = {
+          pdfOpenParams: {
+            pagemode: "thumbs",
+            navpanes: 0,
+            toolbar: 0,
+            statusbar: 0,
+            view: "FitV"
+          }
         }
+        let PDF = PDFObject.embed(`${apiHost}uploads/${url}`, '.img-preview .show', opt);
       }
-      let PDF = PDFObject.embed(`${apiHost}uploads/${url}`, '.img-preview', opt);
+      if(ext == 'jpg'){
+        $('.img-preview').append(
+          $('<img>').attr({
+            'src': `${apiHost}uploads/${url}`,
+            'style': 'max-width:300px'
+          })
+        )
+      }
+      $('.img-preview').append(
+        $('<a>').attr(
+          {
+            'href': `${apiHost}uploads/${url}`,
+            'target': '_blank'
+          }
+        ).html(url)
+      )
     }
   }
+})
+Vue.component('msgComponent',{
+  tempalte:`
+    <div class="msg-overlay">
+      <div class="wrapper">
+        <alert-msg-component></alert-msg-component>
+      </div>
+    </div>
+  `
+})
+Vue.component('delMsgComponent',{
+  template:`
+    <div class="title"></div>
+  `
 })
 Vue.component('alertMsgComponent', {
   props: ['info'],
@@ -422,4 +486,17 @@ Vue.component('alertMsgComponent', {
       });
     }
   }
+})
+Vue.component('successMsgComponent',{
+    template: `
+    <div>
+      <h2>儲存成功</h2>
+      
+    </div>
+    `,
+    mounted(){
+      setTimeout(()=>{
+        this.$root.overlayVisible = false;
+      },1000)
+    }
 })

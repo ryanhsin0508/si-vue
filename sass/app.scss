@@ -126,13 +126,17 @@ header {
 	}
 }
 .modal-body {
-  max-height: 50vh;
+  max-height: calc(100vh - 160px);
   overflow: auto;
   padding: 20px 10px;
   >*{
   	padding-left: 10px;
   	padding-right: 10px;
   }
+  >form{
+    margin-top: 50px;
+  }
+  /*can delete*/
   h2{
   	font-size: 18px;
     &.accor-ttl{
@@ -169,6 +173,7 @@ header {
       }
     }
   }
+  /*end can delete*/
   form{
   	
   }
@@ -226,4 +231,49 @@ header {
 		background-color: #4365e3;
 
 	}
+}
+.top-bar{
+  padding: 10px;
+  top: 50px;
+  &.fixed{
+    position: fixed;
+  }
+}
+.page-post{
+  h2{
+    font-size: 18px;
+    &.accor-ttl{
+      position: relative;
+      padding:10px;
+      background-color: #eafff1;
+      width: 380px;
+      &:after{
+        content:"";
+        position: absolute;
+        right: 10px;
+        top: calc(50% - 4px);
+        border-top: 8px solid #0ea340;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+      }
+      &.active{
+        &:after{
+          transform:rotate(180deg);
+        }
+      }
+    }
+    +.content{
+      overflow: hidden;
+      height: 1px;
+      opacity: 0;
+      margin-bottom: 20px;
+    }
+    &.active{
+      +.content{
+        opacity: 1;
+        height: auto;
+        display:block;
+      }
+    }
+  }
 }

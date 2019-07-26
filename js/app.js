@@ -91,7 +91,7 @@ var formMixin = {
           }
         }
       }
-      if (compName == 'addReportComponent') {
+      if (compName == 'postComponent' || compName == 'addReportComponent') {
         let titleArr = this.titleArr;
         let inspectArr = this.inspectTitleArr
         let inspectTableArr = this.inspectTableTitleArr;
@@ -117,7 +117,7 @@ var formMixin = {
       let str = arr.join('&');
       let file = $("input[type='file']").val();
       console.log(e.target.action)
-
+      console.log(str)
       if (file) {
         $.ajax({
           url: e.target.action,
@@ -131,7 +131,6 @@ var formMixin = {
           },
           success: function(data) {
             that.$root.overlayVisible = false;
-            console.log('aaa')
           },
           error: function(xhr) {
             console.log('failed file')
@@ -147,12 +146,13 @@ var formMixin = {
             xhr.setRequestHeader("Authorization", "Bearer " + token);
           },
           success: function(data) {
-            console.log('bbb')
-            console.log(data)
-            that.$root.overlayVisible = false;
+            // that.$root.overlayVisible = false;
+            // setTimeout(()=>{that.$root.showOverlay('success');},500)
+            
           },
           error: function(xhr) {
             console.log(xhr)
+            location.href = `${host}report.html`
             // action_msg('danger');
           }
         })
@@ -161,8 +161,8 @@ var formMixin = {
 
 
     },
-    sendAPI(e) {
-
+    apiSuccess() {
+      console.log('asdfouhji')
     }
   },
   beforeMount() {
@@ -170,7 +170,7 @@ var formMixin = {
   },
   mounted() {
     let that = this;
-    // this.addRow();
+    // this.addRow(titleArr);
     $('.date-single').each(function(i) {
       let name = $(this).attr('name');
       $(this).dateRangePicker({
@@ -193,11 +193,11 @@ var modifyMixin = {
     }
   },
   methods: {
-    addRow() {
+    addRow(titleArr) {
       let last = this.itemLength - 1;
       let obj = { name: "" };
       console.log(this.overlayData)
-      this.titleArr.map((v) => {
+      titleArr.map((v) => {
         if (this.overlayData.length > 0) {
           obj[v[1]] = this.sameVal.indexOf(v[1]) >= 0 ? this.overlayData[last][v[1]] : '';
         } else {
@@ -209,7 +209,7 @@ var modifyMixin = {
 
   },
   mounted() {
-    this.addRow();
+    // this.addRow();
   },
   computed: {
     itemLength() {
@@ -240,6 +240,7 @@ $(function() {
     data: {
       instance: 'root',
       overlayVisible: false,
+      msgVisible: false,
       overlayData: {}
     },
     methods: {
