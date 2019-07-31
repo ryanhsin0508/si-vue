@@ -11,14 +11,18 @@ function getToken() {
 var token = getToken();
 
 
-function getAjax(uri, type, p_number) {
+function getAjax(uri, type, p_number, data) {
   token = getToken();
-
+  let ct = "application/json; charset=utf-8";
+  if (uri == 'Api/itemList/0'){
+    ct = 'application/x-www-form-urlencoded'
+  }
   return $.ajax({
     async: false,
     url: apiHost + uri,
     method: "POST",
-    contentType: "application/json; charset=utf-8",
+    data:data,
+    contentType: ct,
     cache: false,
     beforeSend: function(xhr) {
       xhr.setRequestHeader("Authorization", "Bearer " + token);
@@ -32,12 +36,10 @@ function getAjax(uri, type, p_number) {
       });
     },
     success: function(data) {
-      
       // setINFO(data);
     }
   }).responseText;
 }
-
 function getString(){
   return $.ajax({
     async:false,

@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" >
   <title>檢驗系統</title>
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/fileinput.css">
@@ -31,7 +32,7 @@
     <header-component></header-component>
     <report-component @overlay="showOverlay"></report-component>
     <modal v-if="overlayVisible" @close="overlayVisible=false" :overlay-data="overlayData"></modal>
-
+    <loading-component v-if="loadingVisible" @close="loadingVisible=false"></loading-component>
   </section>
 </body>
 

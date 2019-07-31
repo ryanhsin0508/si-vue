@@ -3,14 +3,19 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" >
+
   <title>檢驗系統</title>
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/all.css">
   <link rel="stylesheet" href="css/basic.css">
   <link rel="stylesheet" href="css/app.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="css/daterangepicker.css">
   <script src="js/jquery.min.js"></script>
   <script src="js/jquery.dataTables.min.js"></script>
+  <script src="js/moment.min.js" type="text/javascript"></script>
+  <script src="js/jquery.daterangepicker.js"></script>
   <script src="js/common.js"></script>
   <script src="js/vue.js"></script>
   <script src="js/app.js"></script>
@@ -23,8 +28,10 @@
 
   <section id="app" class="wrap">
     <header-component></header-component>
-    <product-component @overlay="showOverlay"></product-component>
+    <product-component @overlay="showOverlay" @msg="alertMsg"></product-component>
     <modal v-if="overlayVisible" @close="overlayVisible = false" :overlay-data="overlayData"></modal>
+    <msg-component v-if="msgVisible" :type="msgType" @close="msgVisible = false" ></msg-component>
+    <loading-component v-if="loadingVisible"></loading-component>
   </section>
 </body>
 

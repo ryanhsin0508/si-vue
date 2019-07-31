@@ -52,7 +52,7 @@ Vue.component('addFormComponent', {
     <li><input type="text" class="form-control" name="MB002" placeholder="產品名稱" v-model="overlayData.MB002" required></li>
     <li><input type="text" class="form-control" name="MB003" placeholder="產品規格" v-model="overlayData.MB003"></li>
   </ul>
-  <button type="submit">儲存</button>
+  <div class="flex center"><button type="submit" class="btn-box blue">儲存</button></div>
 </form>
 `,
   methods: {
@@ -70,7 +70,7 @@ Vue.component('inspectItemsComponent', {
         ['單位', 'unit'],
         ['上標', 'upper'],
         ['下標', 'lower'],
-        ['生效日期', 'eff_day']
+        ['生效日期', 'eff_day', 'date']
       ],
       overlayData: { a: 'b' }
     }
@@ -98,7 +98,11 @@ Vue.component('inspectItemsComponent', {
             <tr v-for="(list, listIndex) in overlayData">
               <td v-for="(item, index) in titleArr">
                 <input type="text" v-model="list[item[1]]"
+                :class="item[2] ? item[2]+'-single' : ''" 
+                :data-index="parseInt(Number(listIndex)+1)"
                 :name="'detail[' + parseInt(Number(listIndex)+1) + '][' + item[1] + ']'"
+                autocomplete="off"
+                @click.stop="hideOtherDate"
                 />
               </td>
               <td>
@@ -119,11 +123,22 @@ Vue.component('inspectItemsComponent', {
     </form>
   </div>
   `,
+  methods:{
+    hideOtherDate(){
+      $('.date-picker-wrapper').not(':hidden').hide();
+    }
+  },
+  beforeCreate(){
+    vm.loadingVisible = true;
+  },
   beforeMount() {
     //inspectItemsComponent
+    console.log('asdfhuio')
+    
     this.overlayData = getData('Api/exdelist/' + this.info[0], 'post' + this.info[0], '')
   },
   mounted(){
+    vm.loadingVisible = false;
     this.addRow(this.titleArr)
   }
 })
@@ -146,14 +161,22 @@ Vue.component('previewInspectComponent', {
         ['上標', 'upper'],
         ['下標', 'lower']
       ],
-      overlayData: {}
+      overlayData: {},
+      hasImgPreview: false
     }
   },
   template: `
-  <div>
-    <ul>
+  <div class="preview-inspect-component inspect-table">
+    <div class="top">
+      <ul>
       <li v-for="(arr, index) in titleArr">{{arr[0]}}: {{info[arr[1]]}}</li>
-    </ul>
+      </ul>
+      <div class="img-preview" v-show="hasImgPreview">
+        <div class="show">
+        </div>
+      </div>
+      <div class="print"><a href="" @click.prevent="print">列印檢驗資訊</a></div>
+    </div>
     <div>
       <table class="table-st1">
         <thead>
@@ -163,16 +186,60 @@ Vue.component('previewInspectComponent', {
         </thead>
         <tbody>
           <tr v-for="list in overlayData">
-            <td v-for="arr in inspectArr">{{list[arr[1]]}}</td>
+            <td
+              v-for="arr in inspectArr"
+              :class="{
+                'exceed': arr[1] == 'result' && parseInt(list['result']) > parseInt(list['upper']),
+                'below': arr[1] == 'result' && parseInt(list['result']) < parseInt(list['lower'])
+              }"
+            >{{list[arr[1]]}}</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
   `,
+  methods:{
+    print(){
+      var value = $('.inspect-table').html();
+      var newHTML = $('<table>').append(value)
+      // newHTML = newHTML.find('a').remove()
+      newHTML.find('a').addClass('hide');
+      console.log(newHTML.html())
+      var printPage = window.open("","printPage","");
+      printPage.document.open();
+      printPage.document.write("<HTML><head><link rel='stylesheet' href='css/basic.css' /></head><body onload='window.print();window.close()'>");
+      printPage.document.write(newHTML.html());
+      printPage.document.close("</body></HTML>");
+    }
+  },
+  beforeCreate(){
+    console.log('aaa')
+    vm.loadingVisible = true;
+  },
   beforeMount() {
     this.overlayData = getData(`Api/infodetail/${this.info[0]}/${this.info[1]}/${encodeURI(this.info[3])}`, 'post')
     // this.overlayData = getDa;
+  },
+  mounted(){
+    vm.loadingVisible = false;
+    if (this.overlayData[0].filename) {
+      this.hasImgPreview = true;
+      let url = this.overlayData[0].filename;
+      
+      let ext = url.substr(url.lastIndexOf('.')+1);
+      console.log(`${apiHost}uploads/${url}`)
+      console.log(ext)
+      
+      $('.img-preview').append(
+        $('<a>').attr(
+          {
+            'href': `${apiHost}uploads/${url}`,
+            'target': '_blank'
+          }
+        ).html(url)
+      )
+    }
   }
 })
 /*t3-2*/
@@ -443,13 +510,34 @@ Vue.component('addReportComponent', {
   }
 })
 Vue.component('msgComponent',{
-  tempalte:`
+  props:['type'],
+  template:`
+  <transition name="fade">
     <div class="msg-overlay">
       <div class="wrapper">
-        <alert-msg-component></alert-msg-component>
+        <div class="container">
+          <success-msg-component v-if="type == 'success'"></success-msg-component>
+          <button class="btn-box center" @click="$emit('close')">確定</button>
+        </div>
       </div>
     </div>
+    </transition>
+  `,
+  mounted(){
+    setTimeout(()=>{
+      vm.msgVisible = false;
+    },1000)
+  }
+})
+Vue.component('loadingComponent',{
+  template:
   `
+  <div class="loading">
+    <div class="text">Loading...</div>
+  </div>
+  `,
+
+
 })
 Vue.component('delMsgComponent',{
   template:`
@@ -489,9 +577,8 @@ Vue.component('alertMsgComponent', {
 })
 Vue.component('successMsgComponent',{
     template: `
-    <div>
-      <h2>儲存成功</h2>
-      
+    <div class="content">
+      儲存成功
     </div>
     `,
     mounted(){
