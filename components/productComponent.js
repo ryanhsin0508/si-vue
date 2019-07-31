@@ -32,7 +32,7 @@ Vue.component('productComponent', {
   mixins: [tableMixin],
   data() {
     return {
-      primary:1,
+      
       list: productData,
       titleArr,
       itemFrom: 0,
@@ -46,12 +46,13 @@ Vue.component('productComponent', {
       <h2>產品基本資料</h2>
       <a class="btn-box blue" href="javascript:;" @click="add">新增</a>
     </div>
+    <div class="table-filter" @click="showFilterDropdown ? showFilterDropdown=false : showFilterDropdown=true">{{titleArr[primary]['name']}}</div>
     <table class="table-st1">
-      <thead>
+      <thead v-show="showFilterDropdown">
       <tr>
         <th
           v-for="(arr, index) in titleArr" 
-          
+          @click="changePrimary(index)"
           :class="arr['className']"
         >
           {{titleArr[index]['name']}}
@@ -84,9 +85,6 @@ Vue.component('productComponent', {
 
       this.$emit('overlay', 'inspectItems', item)
     },1)
-    },
-    changePrimary(i){
-      this.primary = i
     }
   },
   computed: {
