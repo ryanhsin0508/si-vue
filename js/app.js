@@ -1,5 +1,11 @@
 var host = /si-vue/;
 var tableMixin = {
+  data() {
+    return {
+      showFilterDropdown: false,
+      primary: 1
+    }
+  },
   methods: {
     memorizeSort(name, which, seq) {
       let obj = {
@@ -8,12 +14,13 @@ var tableMixin = {
       }
       localStorage.setItem(`${name}Sort`, JSON.stringify(obj))
     },
-    addDataTable(){
+    addDataTable() {
       let that = this;
       let name = this.$options.name
       let columnCount = $('.table-st1 th').length;
       let colArr = [];
       let lsObj = JSON.parse(localStorage.getItem(`${name}Sort`));
+      this.primary = lsObj ? lsObj['which'] : 0;
       console.log(lsObj)
       let sortBy = lsObj ? lsObj['which'] : 0;
       let sortSeq = lsObj ? lsObj['seq'] : 'desc';
@@ -41,20 +48,29 @@ var tableMixin = {
         "columns": colArr,
         responsive: true,
         "order": [
-        [sortBy, sortSeq]
+          [sortBy, sortSeq]
         ],
         "lengthMenu": [
+<<<<<<< Updated upstream
         [15, 50, 100, -1],
         [15, 50, 100, "All"]
+=======
+          [16, 50, 100, -1],
+          [16, 50, 100, "All"]
+>>>>>>> Stashed changes
         ]
       });
       $('.table-st1 th').click(function() {
         let idx = $(this).index();
-        let seq = this.className == 'sorting_desc' ? 'desc' : 'asc'
+        let seq = $(this).hasClass('sorting_desc') ? 'desc' : 'asc'
         that.memorizeSort(name, idx, seq);
       })
     },
-    destroyDTable(){
+
+    changePrimary(i) {
+      this.primary = i
+    },
+    destroyDTable() {
       this.dtable.destroy();
     }
   },
@@ -92,7 +108,7 @@ var formMixin = {
         for (let key in data) {
           for (let i in titleArr) {
             let listKey = titleArr[i][1];
-              arr.push(`detail[${parseInt(key)+1}][${listKey}]=${data[key][listKey]}`)
+            arr.push(`detail[${parseInt(key)+1}][${listKey}]=${data[key][listKey]}`)
 
           }
         }
@@ -154,7 +170,7 @@ var formMixin = {
             xhr.setRequestHeader("Authorization", "Bearer " + token);
           },
           success: function(data) {
-            if(compName == 'postComponent'){
+            if (compName == 'postComponent') {
               location.href = `${host}report.html`
             } else {
               that.$root.overlayVisible = false;
@@ -164,7 +180,7 @@ var formMixin = {
           },
           error: function(xhr) {
             console.log(xhr)
-            if(compName == 'postComponent'){
+            if (compName == 'postComponent') {
               location.href = `${host}report.html`
             }
             // action_msg('danger');
@@ -185,7 +201,7 @@ var formMixin = {
   mounted() {
     let that = this;
     // this.addRow(titleArr);
-    
+
   }
 }
 var modifyMixin = {
@@ -197,7 +213,7 @@ var modifyMixin = {
   methods: {
     bindDatePicker() {
       let that = this;
-      $('.modal-body').click(function(e){
+      $('.modal-body').click(function(e) {
         e.stopPropagation();
         $('.date-picker-wrapper').not(':hidden').slideUp(150);
       })
@@ -237,21 +253,21 @@ var modifyMixin = {
         }
       })
       this.overlayData.push(obj)
-      
+
     },
-    
+
 
   },
-  updated(){
+  updated() {
     this.bindDatePicker()
   },
   mounted() {
     // this.addRow();
     // this.bindDatePicker()
   },
-  beforeDestroy(){
+  beforeDestroy() {
     console.log('beforeDDDD')
-    $('.date-single.activated').each(function(){
+    $('.date-single.activated').each(function() {
       $(this).data('dateRangePicker').destroy();
     })
   },
@@ -287,14 +303,14 @@ $(function() {
       overlayVisible: false,
       loadingVisible: false,
       msgVisible: false,
-      msgType:'',
+      msgType: '',
       overlayData: {}
     },
     methods: {
       alertHandler() {
         alert('alerted')
       },
-      alertMsg(type){
+      alertMsg(type) {
         this.msgVisible = true;
         this.msgType = type;
       },
@@ -303,19 +319,19 @@ $(function() {
         this.overlayData.type = type;
         switch (type) {
           case 'add':
-          this.overlayData.title = getString()['product']['add_overlay']['title'];
-          break;
+            this.overlayData.title = getString()['product']['add_overlay']['title'];
+            break;
           case 'inspectItems':
-          this.overlayData.title = getString()['product']['inspect_overlay']['title'];
-          break;
+            this.overlayData.title = getString()['product']['inspect_overlay']['title'];
+            break;
           case 'previewInspect':
-          this.overlayData.title = getString()['report']['preview_inspect']['title'];
-          break;
+            this.overlayData.title = getString()['report']['preview_inspect']['title'];
+            break;
           case 'addReport':
-          this.overlayData.title = getString()['report']['add_report']['title'];
-          break;
+            this.overlayData.title = getString()['report']['add_report']['title'];
+            break;
           case 'delReport':
-          this.overlayData.title = getString()['report']['del_report']['title'];
+            this.overlayData.title = getString()['report']['del_report']['title'];
         }
         this.overlayData.info = info;
 

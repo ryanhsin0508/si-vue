@@ -15,6 +15,10 @@ Vue.component('productComponent', {
   mixins: [tableMixin],
   data() {
     return {
+<<<<<<< Updated upstream
+=======
+      
+>>>>>>> Stashed changes
       list: productData,
       titleArr,
       itemFrom: 0,
@@ -28,11 +32,23 @@ Vue.component('productComponent', {
       <h2>產品基本資料</h2>
       <a class="btn-box blue" href="javascript:;" @click="add">新增</a>
     </div>
+    <div class="table-filter" @click="showFilterDropdown ? showFilterDropdown=false : showFilterDropdown=true">{{titleArr[primary]['name']}}</div>
     <table class="table-st1">
-      <thead>
+      <thead v-show="showFilterDropdown">
       <tr>
+<<<<<<< Updated upstream
         <th v-for="(arr, index) in titleArr">{{titleArr[index][0]}}</th>
         <th>檢驗預設值</th>
+=======
+        <th
+          v-for="(arr, index) in titleArr" 
+          @click="changePrimary(index)"
+          :class="arr['className']"
+        >
+          {{titleArr[index]['name']}}
+        </th>
+        <th class="hide-640">檢驗預設值</th>
+>>>>>>> Stashed changes
       </tr>
       </thead>
       <tbody>

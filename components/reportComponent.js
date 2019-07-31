@@ -39,17 +39,18 @@ Vue.component('reportComponent', {
       <h2>檢驗報告管理</h2>
       <a class="btn btn-add" href="javascript:;" @click="$emit('overlay', 'addReport', '')">新增</a>
     </div>
+    <div class="table-filter" @click="showFilterDropdown ? showFilterDropdown=false : showFilterDropdown=true">{{titleArr[primary][0]}}</div>
     <table class="table-st1">
-      <thead>
+      <thead v-show="showFilterDropdown">
       <tr>
-        <th v-for="(arr, index) in titleArr">{{titleArr[index][0]}}</th>
+        <th v-for="(arr, index) in titleArr" @click="changePrimary(index)"">{{titleArr[index][0]}}</th>
         <th></th>
       </tr>
       </thead>
       <tbody>
         <tr v-for="(item, listIndex) in list">
           <td v-for="(arr, index) in titleArr"
-            :class="{'text-blue text-center':titleArr[index][1] == 'num'}"
+            :class="[{'text-blue text-center':titleArr[index][1] == 'num'}]"
             @mouseover="titleArr[index][1] == 'num' && item[titleArr[index][1]] != 0 ? showDetailHandler($event ,listIndex) : this.showDetail = null" @mousemove="detailPosHandler($event)" @mouseout="showDetail = null">
             <template v-if="titleArr[index][1] == 'create_dt'">{{item[titleArr[index][1]] | date}}</template>
             <template v-else>{{item[titleArr[index][1]]}}</template>
