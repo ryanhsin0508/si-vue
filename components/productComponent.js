@@ -2,12 +2,29 @@ var productData = getData('Api/invmb/', 'Api/invmb', '');
 var overlayData;
 var stringsData = getString();
 // var productData = JSON.parse(productData);
+
 var titleArr = [
-  ['更新時間', 7],
-  ['產品名稱', 1],
-  ['產品規格', 2],
-  ['產品號碼', 0]
-];
+  {
+    'name': '更新時間',
+    'key': 7,
+    'className': 'update_time'
+  },
+  {
+    'name': '產品名稱',
+    'key': 'MB002',
+    'className': 'name'
+  },
+  {
+    'name': '產品規格',
+    'key': 'MB003',
+    'className': 'spec'
+  },
+  {
+    'name': '產品號碼',
+    'key': 'MB001',
+    'className': 'p_number'
+  },
+]
 var widthArr = [];
 
 Vue.component('productComponent', {
@@ -15,6 +32,7 @@ Vue.component('productComponent', {
   mixins: [tableMixin],
   data() {
     return {
+      primary:1,
       list: productData,
       titleArr,
       itemFrom: 0,
@@ -31,15 +49,23 @@ Vue.component('productComponent', {
     <table class="table-st1">
       <thead>
       <tr>
-        <th v-for="(arr, index) in titleArr">{{titleArr[index][0]}}</th>
-        <th>檢驗預設值</th>
+        <th
+          v-for="(arr, index) in titleArr" 
+          
+          :class="arr['className']"
+        >
+          {{titleArr[index]['name']}}
+        </th>
+        <th class="hide-640">檢驗預設值</th>
       </tr>
       </thead>
       <tbody>
         <tr v-for="(item, index) in list" v-if="item[1]">
-          <td v-for="(arr, index) in titleArr">
-            <template v-if="titleArr[index][1] == '7'">{{item[titleArr[index][1]] | date}}</template>
-            <template v-else>{{item[titleArr[index][1]]}}</template>
+          <td v-for="(arr, index) in titleArr"
+            :class="[arr['className'], {primary:primary == index}]"
+          >
+            <template v-if="arr['key'] == '7'">{{item[titleArr[index]['key']] | date}}</template>
+            <template v-else>{{item[titleArr[index]['key']]}}</template>
           </td>
           <td class="text-center"><a href="javascript:;" @click="inspect(item)"><i class="fa fa-database fa-2x"></i></a></td>
         </tr>
@@ -58,6 +84,9 @@ Vue.component('productComponent', {
 
       this.$emit('overlay', 'inspectItems', item)
     },1)
+    },
+    changePrimary(i){
+      this.primary = i
     }
   },
   computed: {

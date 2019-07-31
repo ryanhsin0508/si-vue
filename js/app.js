@@ -44,8 +44,8 @@ var tableMixin = {
         [sortBy, sortSeq]
         ],
         "lengthMenu": [
-        [15, 50, 100, -1],
-        [15, 50, 100, "All"]
+        [16, 50, 100, -1],
+        [16, 50, 100, "All"]
         ]
       });
       $('.table-st1 th').click(function() {

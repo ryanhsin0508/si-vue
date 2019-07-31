@@ -37,7 +37,7 @@ Vue.component('reportComponent', {
   <div class="width-limiter">
     <div class="heading">
       <h2>檢驗報告管理</h2>
-      <a class="btn btn-add" href="javascript:;" @click="$emit('overlay', 'addReport', '')">新增</a>
+      <a class="btn btn-add" href="javascript:;" @click="add">新增</a>
     </div>
     <table class="table-st1">
       <thead>
@@ -87,6 +87,9 @@ Vue.component('reportComponent', {
 
         this.$emit('overlay', 'previewInspect', item)
       },1)
+    },
+    add(){
+      location.href=`${host}post.html`
     },
     modify(info){
       console.log(`${host}post.html${info['p_number']}/${info['b_number']}/${info['s_number']}`)

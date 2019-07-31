@@ -79,6 +79,10 @@ Vue.component('inspectItemsComponent', {
   <div>
     <h2 class="pl10 pr10 mb10">{{this.info[1]}} - {{this.info[2]}}</h2>
     <form action="/si/Api/itemdetail" method="post" @submit.prevent="onSubmit">
+      <ul class="btns pl10 pr10 flex between">
+        <li><button class="btn-box green" @click.prevent="addRow(titleArr)">新增檢驗品項</button></li>
+        <li><button class="btn-box blue" type="submit">儲存</button></li>
+      </ul>
       <div class="form-table">
         <table class="table-input">
           <thead>
@@ -115,10 +119,7 @@ Vue.component('inspectItemsComponent', {
 
           </tbody>
         </table>
-        <ul class="btns pl10 pr10 flex between">
-          <li><button class="btn-box green" @click.prevent="addRow(titleArr)">新增檢驗品項</button></li>
-          <li><button class="btn-box blue" type="submit">儲存</button></li>
-        </ul>
+        
       </div>
     </form>
   </div>

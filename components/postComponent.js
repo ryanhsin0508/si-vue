@@ -51,7 +51,7 @@ Vue.component('postComponent', {
   <div class="width-limiter">
     <form action="/si/Api/infoadd" class="width-limiter form-st1" method="post" @submit.prevent="onSubmit" enctype="multipart/form-data">
       <div class="top-bar">
-        <div>
+        <div class="width-limiter">
           <h2><template v-if="true">{{formData.MB002}} - {{formData.MB003}}</template></h2>
           <ul class="btns flex">
             <li><button class="btn-box red" type="button" @click.prevent="goBack">返回</button></li>
