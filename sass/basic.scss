@@ -736,7 +736,21 @@ input[type=text] {
   &:not(.expand) {
     position: relative;
   }
-
+  .ttl{
+    position: relative;
+    line-height: 2em;
+    border-radius: 5px;
+    cursor: pointer;
+    &:after{
+      content:"";
+      position: absolute;
+      border-top:7px solid #333;
+      border-left:5px solid transparent;
+      border-right:5px solid transparent;
+      right: 10px;
+      top: calc(50% - 3px);
+    }
+  }
   // max-width: 250px;
   // flex-grow: 1; dont edit
   &.w-srt {
@@ -759,8 +773,7 @@ input[type=text] {
   &.bordered {
     border: none;
 
-    h4,
-    h5 {
+    .ttl {
       padding: 0 40px 0 10px;
       border: 1px solid $darkgray;
       box-sizing: border-box;
@@ -820,7 +833,7 @@ input[type=text] {
 
   .opt {
     position: absolute;
-    display: none;
+    // display: none;
     cursor: pointer;
     left: 0;
     background-color: #fff;
@@ -921,6 +934,26 @@ input[type=text] {
 
 .form-st1 {
   .custom-input {
+    &.hor {
+      li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        margin-top: 10px;
+
+        h3 {
+          text-align: right;
+          width: 4em;
+          margin-right: 10px;
+        }
+
+        input,
+        select {
+          flex-grow: 1;
+        }
+
+      }
+    }
     li {
       position: relative;
       display: flex;
@@ -961,7 +994,7 @@ input[type=text] {
         box-sizing: border-box;
       }
 
-      input {
+      input:not([type=checkbox]) {
         border-radius: 0;
         box-shadow: none;
         width: 240px;

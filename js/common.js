@@ -17,12 +17,12 @@ function getAjax(uri, type, p_number, data) {
   if (uri == 'Api/itemList/0'){
     ct = 'application/x-www-form-urlencoded'
   }
+
   return $.ajax({
     async: false,
     url: apiHost + uri,
     method: "POST",
     data:data,
-    contentType: ct,
     cache: false,
     beforeSend: function(xhr) {
       xhr.setRequestHeader("Authorization", "Bearer " + token);
@@ -50,7 +50,7 @@ function getString(){
     }
   }).responseJSON;
 }
-function getData(uri, type, p_number){
-  return JSON.parse(getAjax(uri, type, p_number));
+function getData(uri, type, p_number, data){
+  return JSON.parse(getAjax(uri, type, p_number, data));
 
 }

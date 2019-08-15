@@ -19,5 +19,13 @@
 		"del_report": {
 			"title": "刪除檢驗報告"
 		}
+	},
+	"role": {
+		"title": "編輯角色權限"
+	},
+	"user": {
+		"del_user":{
+			"title": "刪除使用者"
+		}
 	}
 }

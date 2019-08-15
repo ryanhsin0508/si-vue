@@ -16,7 +16,9 @@ Vue.component('modal', {
           <inspect-items-component v-if="overlayData.type == 'inspectItems'" :info="overlayData.info"></inspect-items-component>
           <preview-inspect-component v-if="overlayData.type == 'previewInspect'" :info="overlayData.info"></preview-inspect-component>
           <add-report-component v-if="overlayData.type == 'addReport'" :info="overlayData.info ? overlayData.info : ''"></add-report-component>
+          <edit-permission-component v-if="overlayData.type == 'role'" :info="overlayData.info ? overlayData.info : ''"></edit-permission-component>
           <alert-msg-component v-if="overlayData.type == 'delReport'" @close="$emit('close')" :info="overlayData.info"></alert-msg-component>
+          <del-user-component v-if="overlayData.type == 'delUser'" @close="$emit('close')" :info="overlayData.info"></del-user-component>
           <success-msg-component v-if="overlayData.type == 'success'"></success-msg-component>
 
         </div>
@@ -72,7 +74,7 @@ Vue.component('inspectItemsComponent', {
         ['下標', 'lower'],
         ['生效日期', 'eff_day', 'date']
       ],
-      overlayData: { a: 'b' }
+      overlayData: {}
     }
   },
   template: `
@@ -510,6 +512,96 @@ Vue.component('addReportComponent', {
     }
   }
 })
+Vue.component('editPermissionComponent',{
+  props: ['info'],
+  mixins: [formMixin, modifyMixin],
+  data() {
+    return {
+      titleArr: [ 
+        ["產品資訊","Info"],
+        ["檢驗資料","Item"],
+        ["檢驗報告","Report"],
+        ["權限管理","Role"],
+        ["帳號管理","User"]
+      ],
+      perArr:[
+        ["新增","ins"],
+        ["修改","upd"],
+        ["刪除","del"],
+        ["匯出","dow"]
+      ],
+      overlayData: {},
+      formData:{
+        permissions:{
+          // Info:true
+        },
+        usable:{
+          Info:{
+            ins:true
+          },
+          Item:{},
+          Report:{},
+          Role:{},
+          User:{},
+        }
+      }
+    }
+  },
+  template: `
+  <div>
+    <form class="form-st1" action="/si/Api/itemdetail" method="post" @submit.prevent="onSubmit">
+      <ul class="btns pl10 pr10 flex between">
+        <li><button class="btn-box blue" type="submit">儲存</button></li>
+      </ul>
+      <div class="custom-input">
+        <ul>
+          <li>
+            <h3 class="ttl">角色名稱</h3>
+            <input type="text" :value="overlayData.title" />
+          </li>
+          <li>
+            <h3 class="ttl">角色權限</h3>
+            <ul style="margin-right:30px;margin-left: 10px;">
+              <li v-for="item in titleArr" class="flex v-center" style="height:40px;">
+                <input :id="item[1]" type="checkbox" v-model="formData.permissions[item[1]]" /><label :for="item[1]">{{item[0]}}</label>
+                <ul class="flex v-center" style="margin-left:10px">
+                  <li v-for="per in perArr" class="flex v-center" style="margin-right:10px;height:40px;margin-bottom:0;line-height">
+                  <input 
+                    :id="item[1] + '-' + per[1]" 
+                    type="checkbox" 
+                    v-model="formData.usable['Info'][per[1]]" 
+                  />
+                  <label :for="item[1] + '-' + per[1]">{{per[0]}}</label>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </form>
+  </div>
+  `,
+  methods:{
+    hideOtherDate(){
+      $('.date-picker-wrapper').not(':hidden').hide();
+    }
+  },
+  beforeCreate(){
+    vm.loadingVisible = true;
+  },
+  beforeMount() {
+    //inspectItemsComponent
+    console.log('asdfhuio')
+    
+    let o = {"id": this.info.id}
+    this.overlayData = getData('Api/getGroup', 'post', '', o)
+  },
+  mounted(){
+    vm.loadingVisible = false;
+    // this.addRow(this.titleArr)
+  }
+})
 Vue.component('msgComponent',{
   props:['type'],
   template:`
@@ -549,7 +641,7 @@ Vue.component('alertMsgComponent', {
   props: ['info'],
   template: `
 <div>
-  <h2>確認刪除檢驗報告？</h2>
+  <h2>確認刪除？</h2>
   <ul class="btns flex end">
     <li><a href="javascript:;" class="btn-box darkgray" @click="deleteReport(info)">YES</a></li>
     <li><a href="javascript:;" class="btn-box darkgray"  @click="$emit('close')">NO</a></li>
@@ -562,6 +654,37 @@ Vue.component('alertMsgComponent', {
       console.log(`${apiHost}Api/delinfodetail/${a}`)
       $.ajax({
         url: `${apiHost}Api/delinfodetail/${a}`,
+        method: "DELETE",
+        contentType: "application/json; charset=utf-8",
+        cache: false,
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("Authorization", "Bearer " + token);
+        },
+        success: function(data) {
+          location.reload();
+          // getInList(mb001);
+        }
+      });
+    }
+  }
+})
+Vue.component('delUserComponent', {
+  props: ['info'],
+  template: `
+<div>
+  <h2>確認刪除使用者？</h2>
+  <ul class="btns flex end">
+    <li><a href="javascript:;" class="btn-box darkgray" @click="deleteUser(info)">YES</a></li>
+    <li><a href="javascript:;" class="btn-box darkgray"  @click="$emit('close')">NO</a></li>
+  </ul>
+</div>
+`,
+  methods: {
+    deleteUser(a) {
+      let token = getToken();
+      console.log(`${apiHost}Api/delUser/${a}`)
+      $.ajax({
+        url: `${apiHost}Api/delUser/${a}`,
         method: "DELETE",
         contentType: "application/json; charset=utf-8",
         cache: false,

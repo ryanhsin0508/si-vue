@@ -131,7 +131,9 @@ var formMixin = {
           }
         }
       }
-
+      if(compName == 'editPermissionComponent'){
+        console.log(arr)
+      }
       let str = arr.join('&');
       let file = $("input[type='file']").val();
       console.log(e.target.action)
@@ -156,6 +158,7 @@ var formMixin = {
           }
         });
       } else {
+        console.log('TESTAAA')
         $.ajax({
           url: e.target.action,
           type: 'post',
@@ -327,6 +330,12 @@ $(function() {
             break;
           case 'delReport':
             this.overlayData.title = getString()['report']['del_report']['title'];
+            break;
+          case 'role':
+            this.overlayData.title = getString()['role']['title'];
+            break;
+          case 'delUser':
+            this.overlayData.title = getString()['user']['del_user']['title'];
         }
         this.overlayData.info = info;
 
