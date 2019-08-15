@@ -209,7 +209,7 @@ Vue.component('previewInspectComponent', {
       console.log(newHTML.html())
       var printPage = window.open("","printPage","");
       printPage.document.open();
-      printPage.document.write("<HTML><head><link rel='stylesheet' href='css/basic.css' /></head><body onload='window.print();window.close()'>");
+      printPage.document.write("<HTML><head><link rel='stylesheet' href='css/table.css' /></head><body onload='window.print();window.close()'>");
       printPage.document.write(newHTML.html());
       printPage.document.close("</body></HTML>");
     }
