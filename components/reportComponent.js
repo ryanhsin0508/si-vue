@@ -55,7 +55,7 @@ Vue.component('reportComponent', {
         <tr v-for="(item, listIndex) in list">
           <td v-for="(arr, index) in titleArr"
             :class="[{'text-blue text-center':titleArr[index][1] == 'num'}]"
-            @mouseover="titleArr[index][1] == 'num' && item[titleArr[index][1]] != 0 ? showDetailHandler($event ,listIndex) : this.showDetail = null" @mousemove="detailPosHandler($event)" @mouseout="showDetail = null">
+            @mouseover="$root.window.width > 640 && titleArr[index][1] == 'num' && item[titleArr[index][1]] != 0 ? showDetailHandler($event ,listIndex) : this.showDetail = null" @mousemove="detailPosHandler($event)" @mouseout="showDetail = null">
             <template v-if="titleArr[index][1] == 'create_dt'">{{item[titleArr[index][1]] | date}}</template>
             <template v-else>{{item[titleArr[index][1]]}}</template>
             <detail-box :info="item" :pos="showDetailPos" v-if="titleArr[index][1] == 'num' && showDetail == listIndex"></detail-box>
