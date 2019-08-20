@@ -40,7 +40,7 @@ Vue.component('userComponent', {
       <tr>
         <th v-for="(arr, index) in titleArr" @click="changePrimary(index)">{{titleArr[index][0]}}</th>
         <th>角色名稱</th>
-        <th></th>
+        <th v-show="$root.window.width > 640"></th>
       </tr>
       </thead>
       <tbody>

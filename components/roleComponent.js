@@ -7,12 +7,7 @@ var titleArr = [
   ['更新時間', 'update_dt'],
   ['角色名稱', 'title']
 ];
-var roleArr = [
-  '系統管理者',
-  '未啟用',
-  '品保人員',
-  '研發人員'
-];
+
 
 Vue.component('roleComponent', {
   props: ['updatePager'],
@@ -21,7 +16,6 @@ Vue.component('roleComponent', {
     return {
       list: roleData,
       titleArr,
-      roleArr,
       itemFrom: 0,
       itemTo: 14,
       pager: 0,
@@ -31,7 +25,8 @@ Vue.component('roleComponent', {
   template: `
   <div class="width-limiter">
     <div class="heading">
-      <h2>帳號管理</h2>
+      <h2>權限管理</h2>
+      <a class="btn-box blue" href="javascript:;" @click="add(list.length)">新增</a>
     </div>
     <div class="table-filter" @click="showFilterDropdown ? showFilterDropdown=false : showFilterDropdown=true">{{titleArr[primary][0]}}</div>
     <table class="table-st1">
@@ -39,7 +34,7 @@ Vue.component('roleComponent', {
       <tr>
         <th v-for="(arr, index) in titleArr" @click="changePrimary(index)">{{titleArr[index][0]}}</th>
         <th>角色權限</th>
-        <th></th>
+        <th v-show="$root.window.width > 640"></th>
       </tr>
       </thead>
       <tbody>
@@ -61,7 +56,7 @@ Vue.component('roleComponent', {
           <td>
             <ul class="btns flex center">
               <li><a class="btn-box blue small"  href="javascript:;" @click="modify(item)">編輯</a></li>
-              <li><a class="btn-box red small"  href="javascript:;" @click="$emit('overlay', 'delUser', item['id'])">刪除</a></li>
+              <li><a class="btn-box red small"  href="javascript:;" @click="$emit('overlay', 'delGroup', item['id'])">刪除</a></li>
             </ul>
           </td>
         </tr>
@@ -70,23 +65,13 @@ Vue.component('roleComponent', {
   </div>
   `,
   methods: {
+    add(l) {
 
-    previewInspect(item) {
-      vm.loadingVisible = true;
-      setTimeout(() => {
-
-        this.$emit('overlay', 'previewInspect', item)
-      }, 1)
-    },
-    add() {
-      location.href = `${host}post.html`
+      this.$emit('overlay', 'role', l+1)
     },
     modify(item) {
       // vm.loadingVisible = true;
-      setTimeout(()=>{
-
       this.$emit('overlay', 'role', item)
-    },1)
     },
     updateRole(id, role_id, listIndex) {
       console.log(this.list[listIndex])

@@ -37,14 +37,18 @@ Vue.component('reportComponent', {
   <div class="width-limiter">
     <div class="heading">
       <h2>檢驗報告管理</h2>
-      <a class="btn btn-add" href="javascript:;" @click="add">新增</a>
+      <a class="btn-box blue" href="javascript:;" @click="add">新增</a>
     </div>
-    <div class="table-filter" @click="showFilterDropdown ? showFilterDropdown=false : showFilterDropdown=true">{{titleArr[primary][0]}}</div>
-    <table class="table-st1">
+    <div class="table-filter" 
+      @click="showFilterDropdown ? showFilterDropdown=false : showFilterDropdown=true"
+    >{{titleArr[primary][0]}}</div>
+    <table class="table-st1 dataTable">
       <thead v-show="showFilterDropdown">
       <tr>
-        <th v-for="(arr, index) in titleArr" @click="changePrimary(index)"">{{titleArr[index][0]}}</th>
-        <th></th>
+        <th v-for="(arr, index) in titleArr"
+          @click="changePrimary(index)"
+        >{{titleArr[index][0]}}</th>
+        <th v-show="$root.window.width > 640"></th>
       </tr>
       </thead>
       <tbody>
@@ -57,7 +61,7 @@ Vue.component('reportComponent', {
             <detail-box :info="item" :pos="showDetailPos" v-if="titleArr[index][1] == 'num' && showDetail == listIndex"></detail-box>
           </td>
           <td>
-            <ul class="btns flex">
+            <ul class="btns flex center">
               <li><a class="btn-box gray small" href="javascript:;" @click="previewInspect(item)">預覽</a></li>
               <li><a class="btn-box blue small"  href="javascript:;" @click="modify(item)">編輯</a></li>
               <li><a class="btn-box red small"  href="javascript:;" @click="$emit('overlay', 'delReport', item['p_number']+'/'+ item['b_number']+'/'+item['s_number'])">刪除</a></li>

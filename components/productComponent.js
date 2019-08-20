@@ -47,7 +47,7 @@ Vue.component('productComponent', {
       <a class="btn-box blue" href="javascript:;" @click="add">新增</a>
     </div>
     <div class="table-filter" @click="showFilterDropdown ? showFilterDropdown=false : showFilterDropdown=true">{{titleArr[primary]['name']}}</div>
-    <table class="table-st1">
+    <table class="table-st1 dataTable">
       <thead v-show="showFilterDropdown">
       <tr>
         <th

@@ -50,15 +50,18 @@ Vue.component('itemComponent', {
     <h2>檢驗資料明細</h2>
     <ul class="flex btns">
     <li><button class="btn-box red" @click.prevent="clearInput"><i class="mr10 fas fa-eraser"></i>清除</button></li>
-    <li><button class="btn-box orange" @click.prevent="down"><i class="mr10 fas fa-download"></i>匯出</button></li>
+    <li><button class="btn-box orange" @click.prevent="down"><i class="mr10 fas fa-download"></i>下載</button></li>
     <li><button class="btn-box blue" @click.prevent="getFilteredItem"><i class="mr10 fas fa-search"></i>搜尋</button></li>
     </ul>
   </div>
   
-    <ul class="grid5 start wrap">
-      <li v-for="item in searchArr" :class="{'sep-date': item[2] == 'startDate'}">
+    <ul class="grid5 spacing10 start wrap">
+      <li v-for="item in searchArr" :class="{'sep-date':  item[2] == 'endDate'}">
         <h3>{{item[0]}}</h3>
-        <input :class="item[2] ? 'date ' + item[2] : ''" type="text" v-model="searchCon[item[1]]" />
+        <input
+          :class="item[2] ? 'date ' + item[2] : ''" type="text"
+          v-model="searchCon[item[1]]" 
+        />
       </li>
       
     </ul>
@@ -101,7 +104,7 @@ Vue.component('itemComponent', {
   },
   mounted() {
     let that = this;
-    $('.sep-date').dateRangePicker(
+    $('.searchCon').dateRangePicker(
       {
         format:'YYYYMMDD',
         separator : ' to ',
@@ -119,6 +122,9 @@ Vue.component('itemComponent', {
           // $('.endDate').val(s2);
         }
       });
+    $('.date.startDate').click(()=>{
+      $('.date.endDate').click()
+    })
 
 
   }
@@ -127,7 +133,7 @@ Vue.component('itemTableComponent',{
   mixins: [tableMixin],
   props:['list', 'titleArr'],
   template:`
-  <table class="table-st1" v-if="true">
+  <table class="table-st1 dataTable" v-if="true">
     <thead>
       <tr>
         <th v-for="(arr, index) in titleArr" width="20%">{{titleArr[index][0]}}</th>

@@ -19,8 +19,8 @@ Vue.component('modal', {
           <edit-permission-component v-if="overlayData.type == 'role'" :info="overlayData.info ? overlayData.info : ''"></edit-permission-component>
           <alert-msg-component v-if="overlayData.type == 'delReport'" @close="$emit('close')" :info="overlayData.info"></alert-msg-component>
           <del-user-component v-if="overlayData.type == 'delUser'" @close="$emit('close')" :info="overlayData.info"></del-user-component>
+          <del-group-component v-if="overlayData.type == 'delGroup'" @close="$emit('close')" :info="overlayData.info"></del-group-component>
           <success-msg-component v-if="overlayData.type == 'success'"></success-msg-component>
-
         </div>
 
 
@@ -87,15 +87,7 @@ Vue.component('inspectItemsComponent', {
       </ul>
       <div class="form-table">
         <table class="table-input">
-          <thead>
-            <tr :class="'grid' + titleArr.length" class="check-same">
-              <th v-for="(item, index) in titleArr">
-                <template v-if="index != 0">
-                  <input :id="item[1]" :value="item[1]" type="checkbox" v-model="sameVal" />
-                  <label :for="item[1]">項目一致</label>
-                </template>
-              </th>
-            </tr>
+          <thead class="hide-m">
             <tr :class="'grid' + titleArr.length">
               <th v-for="(item, index) in titleArr">{{item[0]}}</th>
             </tr>
@@ -103,6 +95,7 @@ Vue.component('inspectItemsComponent', {
           <tbody>
             <tr v-for="(list, listIndex) in overlayData">
               <td v-for="(item, index) in titleArr">
+                <span class="title-mobile">{{item[0]}}</span>
                 <input type="text" v-model="list[item[1]]"
                 :class="item[2] ? item[2]+'-single' : ''" 
                 :data-index="parseInt(Number(listIndex)+1)"
@@ -113,8 +106,8 @@ Vue.component('inspectItemsComponent', {
               </td>
               <td>
                 <button
-                class="btn-remove"
-                @click.prevent="overlayData.splice(listIndex, 1)"
+                  class="btn-remove"
+                  @click.prevent="overlayData.splice(listIndex, 1)"
                 ></button>
               </td>
             </tr>
@@ -181,7 +174,7 @@ Vue.component('previewInspectComponent', {
       <div class="print"><a href="" @click.prevent="print">列印檢驗資訊</a></div>
     </div>
     <div>
-      <table class="table-st1">
+      <table class="table-st1 no-mobile">
         <thead>
           <tr>
             <th v-for="arr in inspectArr">{{arr[0]}}</th>
@@ -356,14 +349,7 @@ Vue.component('addReportComponent', {
       <div class="form-table">
         <table class="table-input">
           <thead>
-            <tr class="grid6 check-same">
-              <th v-for="(item, index) in inspectTableTitleArr" v-if="item[1] != 'show'">
-                <template v-if="index != 0">
-                  <input :id="item[1]" :value="item[1]" type="checkbox" v-model="sameVal" />
-                  <label :for="item[1]">項目一致</label>
-                </template>
-              </th>
-            </tr>
+            
             <tr class="grid6">
 
               <th v-for="item in inspectTableTitleArr" v-if="item[1] != 'show'"">
@@ -530,34 +516,44 @@ Vue.component('editPermissionComponent',{
         ["刪除","del"],
         ["匯出","dow"]
       ],
-      overlayData: {},
+      pers:{
+        Info:"產品資訊",
+        Item:"檢驗資料",
+        Report:"檢驗報告",
+        Role:"權限管理",
+        User:"帳號管理",
+      },
+      overlayData: {
+        features:{
+
+        }
+      },
       formData:{
         permissions:{
           // Info:true
         },
-        usable:{
-          Info:{
-            ins:true
-          },
+        features:{
+          Info:{},
           Item:{},
           Report:{},
           Role:{},
           User:{},
-        }
+        },
+        title:''
       }
     }
   },
   template: `
   <div>
-    <form class="form-st1" action="/si/Api/itemdetail" method="post" @submit.prevent="onSubmit">
-      <ul class="btns pl10 pr10 flex between">
+    <form class="form-st1" action="/si/Api/upGroup" method="post" @submit.prevent="onSubmit">
+      <ul class="btns pl10 pr10 flex end">
         <li><button class="btn-box blue" type="submit">儲存</button></li>
       </ul>
       <div class="custom-input">
         <ul>
           <li>
             <h3 class="ttl">角色名稱</h3>
-            <input type="text" :value="overlayData.title" />
+            <input type="text" v-model="formData.title" />
           </li>
           <li>
             <h3 class="ttl">角色權限</h3>
@@ -568,8 +564,9 @@ Vue.component('editPermissionComponent',{
                   <li v-for="per in perArr" class="flex v-center" style="margin-right:10px;height:40px;margin-bottom:0;line-height">
                   <input 
                     :id="item[1] + '-' + per[1]" 
+                    :class="{active:false}"
                     type="checkbox" 
-                    v-model="formData.usable['Info'][per[1]]" 
+                    v-model="formData.features[item[1]][per[1]]" 
                   />
                   <label :for="item[1] + '-' + per[1]">{{per[0]}}</label>
                   </li>
@@ -593,9 +590,23 @@ Vue.component('editPermissionComponent',{
   beforeMount() {
     //inspectItemsComponent
     console.log('asdfhuio')
-    
+    if(!this.info.id){
+      return
+    }
     let o = {"id": this.info.id}
     this.overlayData = getData('Api/getGroup', 'post', '', o)
+    this.formData.title = this.overlayData.title;
+    $.each(this.overlayData.permissions, (k,v)=>{
+      this.formData.permissions[k] = true
+      // console.log()
+    })
+    $.each(this.overlayData.features, (k,v)=>{
+      console.log(k)
+      for(f in v){
+        this.formData.features[k][v[f]] = true
+      }
+      // this.formData.features[k] = v;
+    })
   },
   mounted(){
     vm.loadingVisible = false;
@@ -685,6 +696,37 @@ Vue.component('delUserComponent', {
       console.log(`${apiHost}Api/delUser/${a}`)
       $.ajax({
         url: `${apiHost}Api/delUser/${a}`,
+        method: "DELETE",
+        contentType: "application/json; charset=utf-8",
+        cache: false,
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("Authorization", "Bearer " + token);
+        },
+        success: function(data) {
+          location.reload();
+          // getInList(mb001);
+        }
+      });
+    }
+  }
+})
+Vue.component('delGroupComponent', {
+  props: ['info'],
+  template: `
+<div>
+  <h2>確認刪除使用者？</h2>
+  <ul class="btns flex end">
+    <li><a href="javascript:;" class="btn-box darkgray" @click="deleteGroup(info)">YES</a></li>
+    <li><a href="javascript:;" class="btn-box darkgray"  @click="$emit('close')">NO</a></li>
+  </ul>
+</div>
+`,
+  methods: {
+    deleteGroup(a) {
+      let token = getToken();
+      console.log(`${apiHost}Api/delGroup/${a}`)
+      $.ajax({
+        url: `${apiHost}Api/delGroup/${a}`,
         method: "DELETE",
         contentType: "application/json; charset=utf-8",
         cache: false,

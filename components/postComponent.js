@@ -49,11 +49,11 @@ Vue.component('postComponent', {
   },
   template: `
   <div class="width-limiter">
-    <form action="/si/Api/infoadd" class="width-limiter form-st1" method="post" @submit.prevent="onSubmit" enctype="multipart/form-data">
+    <form action="/si/Api/infoadd" class="form-st1" method="post" @submit.prevent="onSubmit" enctype="multipart/form-data">
       <div class="top-bar">
         <div class="width-limiter">
           <h2><template v-if="true">{{formData.MB002}} - {{formData.MB003}}</template></h2>
-          <ul class="btns flex">
+          <ul class="btns flex" style="min-width:150px">
             <li><button class="btn-box red" type="button" @click.prevent="goBack">返回</button></li>
             <li><button class="btn-box blue" type="submit">儲存</button></li>
           </ul>
@@ -89,7 +89,7 @@ Vue.component('postComponent', {
           </ul>
         </div>
         <div class="img-preview">
-          <div class="show" style="height:360px;"></div>
+          <div class="show" style="height:360px;" v-show="$root.window.width > 640"></div>
         </div>
       </div>
       
@@ -129,6 +129,7 @@ Vue.component('postComponent', {
             <tbody>
               <tr v-for="(inspectItem, index) in overlayData">
                 <td v-for="item in inspectTableTitleArr" v-if="item[1] != 'show'"">
+                <span class="title-mobile">{{item[0]}}</span>
                   <input
                   type="text"
                   :class="{
@@ -146,7 +147,8 @@ Vue.component('postComponent', {
                     <i class="fas" :class="inspectItem['show'] == 'y' ? 'fa-eye' : 'fa-eye-slash'" ></i>
                   </button>
                   <button 
-                  @click.prevent="overlayData.splice(index, 1)"
+                  @click.prevent
+                  @dblclick.prevent="overlayData.splice(index, 1)"
                   ><i class="fas fa-trash-alt"></i></button>
                 </td>
               </tr>

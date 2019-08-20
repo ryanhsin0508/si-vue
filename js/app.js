@@ -5,6 +5,7 @@ var tableMixin = {
       showFilterDropdown: false,
       primary: 1
     }
+
   },
   methods: {
     memorizeSort(name, which, seq) {
@@ -56,9 +57,11 @@ var tableMixin = {
         ]
       });
       $('.table-st1 th').click(function() {
-        let idx = $(this).index();
-        let seq = $(this).hasClass('sorting_desc') ? 'desc' : 'asc'
-        that.memorizeSort(name, idx, seq);
+        if($(this).html()){
+          let idx = $(this).index();
+          let seq = $(this).hasClass('sorting_desc') ? 'desc' : 'asc'
+          that.memorizeSort(name, idx, seq);
+        }
       })
     },
 
@@ -89,6 +92,7 @@ var formMixin = {
       let overlayData = this.overlayData;
       let token = getToken();
       let arr = [];
+      let apiUrl = e.target.action;
       if (compName == 'addFormComponent') {
         for (key in overlayData) {
           // console.log(`${key}=${overlayData[key]}`)
@@ -132,15 +136,32 @@ var formMixin = {
         }
       }
       if(compName == 'editPermissionComponent'){
+        arr.push(`title=${this.formData.title}`);
+        console.log(arr)
+        for(let key in this.formData.permissions){
+          if(this.formData.permissions[key]){
+            arr.push(`permissions[${key}]=${this.pers[key]}`)
+            for(let k in this.formData.features[key]){
+              if(this.formData.features[key][k]){
+                arr.push(`features[${key}][]=${k}`)
+              }
+            }
+          }
+        }
+        if(this.overlayData.id){
+          arr.push(`group_id=${this.overlayData.id}`)
+        } else {
+          apiUrl = '/si/Api/addGroup'
+        }
+        // arr = ['asdasd']
         console.log(arr)
       }
       let str = arr.join('&');
       let file = $("input[type='file']").val();
-      console.log(e.target.action)
       console.log(str)
       if (file) {
         $.ajax({
-          url: e.target.action,
+          url: apiUrl,
           type: 'post',
           data: new FormData($('form')[0]),
           cache: false,
@@ -158,9 +179,9 @@ var formMixin = {
           }
         });
       } else {
-        console.log('TESTAAA')
+        console.log(str)
         $.ajax({
-          url: e.target.action,
+          url: apiUrl,
           type: 'post',
           data: decodeURI(str),
           cache: false,
@@ -289,6 +310,7 @@ var modifyMixin = {
     }
   }
 }
+var defaultInspect = ['熱量','粗蛋白質','粗脂肪','飽和脂肪','反式脂肪','碳水化合物','總糖','鈣','磷','鈉','鉀','生菌數','大腸桿菌群','大腸桿菌','鉛','鎘','汞','砷','酵母菌黴菌']
 var vm;
 $(function() {
 
@@ -301,8 +323,21 @@ $(function() {
       overlayVisible: false,
       loadingVisible: false,
       msgVisible: false,
+      defaultInspect,
       msgType: '',
-      overlayData: {}
+      overlayData: {},
+      window:{
+        width:0,
+        height:0
+      }
+    },
+    created(){
+      window.addEventListener('resize', ()=>{
+        console.log('ooop')
+        this.window.width = window.innerWidth;
+      })
+      this.window.width = window.innerWidth;
+      this.window.height = window.innerHeight;
     },
     methods: {
       alertHandler() {
@@ -334,9 +369,13 @@ $(function() {
           case 'role':
             this.overlayData.title = getString()['role']['title'];
             break;
+          case 'delGroup':
+            this.overlayData.title = getString()['role']['title'];
+            break;
           case 'delUser':
             this.overlayData.title = getString()['user']['del_user']['title'];
         }
+        console.log(info)
         this.overlayData.info = info;
 
 
