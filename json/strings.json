@@ -26,6 +26,9 @@
 	"user": {
 		"del_user":{
 			"title": "刪除使用者"
+		},
+		"add_user":{
+			"title": "新增使用者"
 		}
 	}
 }

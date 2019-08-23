@@ -33,6 +33,7 @@ Vue.component('userComponent', {
   <div class="width-limiter">
     <div class="heading">
       <h2>帳號管理</h2>
+      <a class="btn-box blue" href="javascript:;" @click="add(roleArr)">新增</a>
     </div>
     <div class="table-filter" @click="showFilterDropdown ? showFilterDropdown=false : showFilterDropdown=true">{{titleArr[primary][0]}}</div>
     <table class="table-st1">
@@ -87,8 +88,8 @@ Vue.component('userComponent', {
         this.$emit('overlay', 'previewInspect', item)
       }, 1)
     },
-    add() {
-      location.href = `${host}post.html`
+    add(r) {
+      this.$emit('overlay', 'addUser', r)
     },
     modify(info) {
       console.log(`${host}post.html${info['p_number']}/${info['b_number']}/${info['s_number']}`)
@@ -100,6 +101,7 @@ Vue.component('userComponent', {
       this.list[listIndex].role_id = role_id
       console.log(token)
       this.optActive = null;
+      console.log(id)
       $.ajax({
         url: '/si/Api/putgroup',
         method: "POST",

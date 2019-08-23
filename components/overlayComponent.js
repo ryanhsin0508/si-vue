@@ -18,6 +18,7 @@ Vue.component('modal', {
           <add-report-component v-if="overlayData.type == 'addReport'" :info="overlayData.info ? overlayData.info : ''"></add-report-component>
           <edit-permission-component v-if="overlayData.type == 'role'" :info="overlayData.info ? overlayData.info : ''"></edit-permission-component>
           <alert-msg-component v-if="overlayData.type == 'delReport'" @close="$emit('close')" :info="overlayData.info"></alert-msg-component>
+          <add-user-component v-if="overlayData.type == 'addUser'" @close="$emit('close')" :info="overlayData.info"></add-user-component>
           <del-user-component v-if="overlayData.type == 'delUser'" @close="$emit('close')" :info="overlayData.info"></del-user-component>
           <del-group-component v-if="overlayData.type == 'delGroup'" @close="$emit('close')" :info="overlayData.info"></del-group-component>
           <success-msg-component v-if="overlayData.type == 'success'"></success-msg-component>
@@ -676,6 +677,70 @@ Vue.component('alertMsgComponent', {
           // getInList(mb001);
         }
       });
+    }
+  }
+})
+Vue.component('addUserComponent', {
+  props: ['info'],
+  data(){
+    return{
+      optActive: false,
+      formData:{
+        role:"未啟用",
+        name:"",
+        account:"",
+        password:"",
+        email:""
+      }
+    }
+  },
+  template: `
+  <div>
+    <form class="form-st1" action="/si/Api/addUser" method="post" @submit.prevent="onSubmit">
+      <ul class="btns pl10 pr10 flex end">
+        <li><button class="btn-box blue" type="submit">儲存</button></li>
+      </ul>
+      <div class="custom-input">
+        <ul>
+        <li>
+          <h3 class="ttl">角色名稱</h3>
+          <div class="custom-select">
+            <h3 class="ttl" 
+              @click="optActive ? optActive = false : optActive = true"
+            >{{formData.role}}</h3>
+            <ul class="opt" v-show="optActive">
+              <li v-for="item in info" @click="updateRole(item)">
+                {{item}}
+              </li>
+            </ul>
+          </div>
+        </li>
+          <li>
+            <h3 class="ttl">姓名</h3>
+            <input type="text" v-model="formData.name"/>
+          </li>
+          <li>
+            <h3 class="ttl">帳號</h3>
+            <input type="text" v-model="formData.account">
+          </li>
+          <li>
+            <h3 class="ttl">密碼</h3>
+            <input type="password" v-model="formData.password">
+          </li>
+          <li>
+            <h3 class="ttl">信箱</h3>
+            <input type="email" v-model="formData.email">
+          </li>
+          
+        </ul>
+      </div>
+    </form>
+  </div>
+  `,
+  methods:{
+    updateRole(item){
+      this.formData.role = item;
+      this.optActive = false;
     }
   }
 })

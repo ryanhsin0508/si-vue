@@ -374,6 +374,9 @@ $(function() {
             break;
           case 'delUser':
             this.overlayData.title = getString()['user']['del_user']['title'];
+            break;
+          case 'addUser':
+            this.overlayData.title = getString()['user']['add_user']['title'];
         }
         console.log(info)
         this.overlayData.info = info;
