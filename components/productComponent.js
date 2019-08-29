@@ -44,7 +44,7 @@ Vue.component('productComponent', {
   <div class="width-limiter">
     <div class="heading">
       <h2>產品基本資料</h2>
-      <a class="btn-box blue" href="javascript:;" @click="add">新增</a>
+      <button class="btn-box blue" @click.prevent="add" :disabled="!(checkPermission('Info', 'ins'))" :title="!(checkPermission('Info', 'ins')) ? '權限不足' : ''">新增</button>
     </div>
     <div class="table-filter" @click="showFilterDropdown ? showFilterDropdown=false : showFilterDropdown=true">{{titleArr[primary]['name']}}</div>
     <table class="table-st1 dataTable">
@@ -76,8 +76,11 @@ Vue.component('productComponent', {
   `,
   methods: {
     add() {
-      
-      this.$emit('overlay', 'add')
+      if(features.Info.includes('ins')){
+        this.$emit('overlay', 'add')
+      } else {
+        alert('權限不足！')
+      }
     },
     inspect(item) {
       vm.loadingVisible = true;

@@ -55,7 +55,7 @@ Vue.component('postComponent', {
           <h2><template v-if="true">{{formData.MB002}} - {{formData.MB003}}</template></h2>
           <ul class="btns flex" style="min-width:150px">
             <li><button class="btn-box red" type="button" @click.prevent="goBack">返回</button></li>
-            <li><button class="btn-box blue" type="submit">儲存</button></li>
+            <li><button class="btn-box blue" type="submit" :disabled="!(checkPermission('Report', 'upd'))" :title="!(checkPermission('Report', 'upd')) ? '權限不足' : ''">儲存</button></li>
           </ul>
         </div>
       </div>

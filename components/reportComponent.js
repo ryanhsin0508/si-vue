@@ -37,7 +37,7 @@ Vue.component('reportComponent', {
   <div class="width-limiter">
     <div class="heading">
       <h2>檢驗報告管理</h2>
-      <a class="btn-box blue" href="javascript:;" @click="add">新增</a>
+      <button class="btn-box blue" :disabled="!(checkPermission('Report', 'ins'))" :title="!(checkPermission('Report', 'ins')) ? '權限不足' : ''" @click="add">新增</button>
     </div>
     <div class="table-filter" 
       @click="showFilterDropdown ? showFilterDropdown=false : showFilterDropdown=true"
@@ -62,9 +62,9 @@ Vue.component('reportComponent', {
           </td>
           <td>
             <ul class="btns flex center">
-              <li><a class="btn-box gray small" href="javascript:;" @click="previewInspect(item)">預覽</a></li>
-              <li><a class="btn-box blue small"  href="javascript:;" @click="modify(item)">編輯</a></li>
-              <li><a class="btn-box red small"  href="javascript:;" @click="$emit('overlay', 'delReport', item['p_number']+'/'+ item['b_number']+'/'+item['s_number'])">刪除</a></li>
+              <li><button class="btn-box gray small" @click="previewInspect(item)">預覽</button></li>
+              <li><button class="btn-box blue small"  @click="modify(item)" >編輯</button></li>
+              <li><button class="btn-box red small"  @click="$emit('overlay', 'delReport', item['p_number']+'/'+ item['b_number']+'/'+item['s_number'])" :disabled="!(checkPermission('Report', 'del'))" :title="!(checkPermission('Report', 'del')) ? '權限不足' : ''">刪除</button></li>
             </ul>
           </td>
         </tr>

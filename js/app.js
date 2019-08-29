@@ -8,6 +8,15 @@ var tableMixin = {
 
   },
   methods: {
+    checkPermission(a,b){
+      console.log(features)
+      // return false;
+      return features[a].includes(b)
+    },
+    permissionDeny(){
+      console.log('asdas')
+      alert('權限不足！')
+    },
     memorizeSort(name, which, seq) {
       let obj = {
         which: which,
@@ -230,6 +239,15 @@ var modifyMixin = {
     }
   },
   methods: {
+    checkPermission(a,b){
+      console.log(features)
+      // return false;
+      return features[a].includes(b)
+    },
+    permissionDeny(){
+      console.log('asdas')
+      alert('權限不足！')
+    },
     bindDatePicker() {
       let that = this;
       $('.modal-body').click(function(e) {
@@ -261,6 +279,7 @@ var modifyMixin = {
       })
     },
     addRow(titleArr) {
+      console.log('ass')
       let last = this.itemLength - 1;
       let obj = { name: "" };
       console.log(this.overlayData)

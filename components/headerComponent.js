@@ -1,17 +1,16 @@
-var headerComponent = {
-  template: `
-    
-  `,
-  data() {
-    return {
-      active:false
-    }
-  },
+let menu,features;
+if(!sessionStorage.menu){
+  location.replace('login.html');
+} else {
+  menu = JSON.parse(sessionStorage.getItem('menu'));
+  features = JSON.parse(sessionStorage.getItem('features'));
 }
 Vue.component('headerComponent', {
   data() {
     return {
-      active:false
+      active:false,
+      menu,
+      features
     }
   },
   template:`
@@ -20,11 +19,10 @@ Vue.component('headerComponent', {
         <div class="width-limiter">
           <h2>品保檢驗系統</h2>
           <ul v-show="active || $root.window.width > 640">
-            <li><a href="${host}product.html">產品資訊</a></li>
-            <li><a href="${host}report.html">檢驗報告</a></li>
-            <li><a href="${host}item.html">檢驗資料</a></li>
-            <li><a href="${host}role.html">權限管理</a></li>
-            <li><a href="${host}user.html">帳號管理</a></li>
+            <li v-for="(item, key) in menu">
+              <a :href="key.toLowerCase() + '.html'">{{item}}</a>
+            </li>
+            <li><a href="" @click.prevent="logout">登出</a></li>
           </ul>
           <button
             class="btn-menu" 
@@ -36,9 +34,10 @@ Vue.component('headerComponent', {
       </nav>
     </header>
   `,
-  method:{
-    toggleActive(){
-
+  methods:{
+    logout(){
+      sessionStorage.clear();
+      location.replace('login.html');
     }
   }
 })

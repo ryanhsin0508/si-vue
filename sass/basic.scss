@@ -198,7 +198,9 @@ li {
 .text-center {
   text-align: center !important;
 }
-
+button:disabled{
+  cursor: not-allowed!important;
+}
 .btn-box {
   display: block;
   border: none;
@@ -209,7 +211,9 @@ li {
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
-
+  &:disabled{
+    cursor: not-allowed;
+  }
   @media(max-width: 640px) {
     padding-left: 15px;
     padding-right: 15px;
@@ -328,7 +332,7 @@ li {
 .width-limiter {
   max-width: 980px;
   margin: 0 auto;
-  overflow: hidden;
+  // overflow: hidden;
 
   @media(max-width: 1000px) {
     padding-left: 10px;

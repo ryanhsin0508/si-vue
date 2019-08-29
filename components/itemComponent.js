@@ -104,7 +104,7 @@ Vue.component('itemComponent', {
   },
   mounted() {
     let that = this;
-    $('.searchCon').dateRangePicker(
+    $('.date.startDate').dateRangePicker(
       {
         format:'YYYYMMDD',
         separator : ' to ',
@@ -122,9 +122,25 @@ Vue.component('itemComponent', {
           // $('.endDate').val(s2);
         }
       });
-    $('.date.startDate').click(()=>{
-      $('.date.endDate').click()
-    })
+    $('.date.endDate').dateRangePicker(
+      {
+        format:'YYYYMMDD',
+        separator : ' to ',
+        getValue: function()
+        {
+          if ($('.startDate').val() && $('.endDate').val() )
+            return $('.startDate').val() + ' to ' + $('.endDate').val();
+          else
+            return '';
+        },
+        setValue: function(s,s1,s2)
+        {
+          that.searchCon.s_day = s1;
+          that.searchCon.e_day = s2;
+          // $('.endDate').val(s2);
+        }
+      });
+    
 
 
   }

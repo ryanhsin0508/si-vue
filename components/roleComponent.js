@@ -26,7 +26,7 @@ Vue.component('roleComponent', {
   <div class="width-limiter">
     <div class="heading">
       <h2>權限管理</h2>
-      <a class="btn-box blue" href="javascript:;" @click="add(list.length)">新增</a>
+      <button class="btn-box blue" :disabled="!(checkPermission('Role', 'ins'))" :title="!(checkPermission('Role', 'ins')) ? '權限不足' : ''" @click="add(list.length)">新增</button>
     </div>
     <div class="table-filter" @click="showFilterDropdown ? showFilterDropdown=false : showFilterDropdown=true">{{titleArr[primary][0]}}</div>
     <table class="table-st1">
@@ -55,8 +55,8 @@ Vue.component('roleComponent', {
           </td>
           <td>
             <ul class="btns flex center">
-              <li><a class="btn-box blue small"  href="javascript:;" @click="modify(item)">編輯</a></li>
-              <li><a class="btn-box red small"  href="javascript:;" @click="$emit('overlay', 'delGroup', item['id'])">刪除</a></li>
+              <li><button class="btn-box blue small" :disabled="!(checkPermission('Role', 'upd'))" :title="!(checkPermission('Role', 'upd')) ? '權限不足' : ''" @click="modify(item)">編輯</button></li>
+              <li><button class="btn-box red small" :disabled="!(checkPermission('Role', 'del'))" :title="!(checkPermission('Role', 'del')) ? '權限不足' : ''" @click="$emit('overlay', 'delGroup', item['id'])">刪除</button></li>
             </ul>
           </td>
         </tr>

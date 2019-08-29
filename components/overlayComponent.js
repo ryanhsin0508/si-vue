@@ -83,8 +83,8 @@ Vue.component('inspectItemsComponent', {
     <h2 class="pl10 pr10 mb10">{{this.info[1]}} - {{this.info[2]}}</h2>
     <form action="/si/Api/itemdetail" method="post" @submit.prevent="onSubmit">
       <ul class="btns pl10 pr10 flex between">
-        <li><button class="btn-box green" @click.prevent="addRow(titleArr)">新增檢驗品項</button></li>
-        <li><button class="btn-box blue" type="submit">儲存</button></li>
+        <li><button class="btn-box green" @click.prevent="checkPermission('Info', 'upd') ? addRow(titleArr) : permissionDeny()" :disabled="!(checkPermission('Info', 'upd'))">新增檢驗品項</button></li>
+        <li><button class="btn-box blue" type="submit" :disabled="!(checkPermission('Info', 'upd'))">儲存</button></li>
       </ul>
       <div class="form-table">
         <table class="table-input">
@@ -109,6 +109,8 @@ Vue.component('inspectItemsComponent', {
                 <button
                   class="btn-remove"
                   @click.prevent="overlayData.splice(listIndex, 1)"
+                  :disabled="!(checkPermission('Info', 'upd'))"
+                  :title="!(checkPermission('Info', 'upd')) ? '權限不足' : ''"
                 ></button>
               </td>
             </tr>
@@ -682,6 +684,7 @@ Vue.component('alertMsgComponent', {
 })
 Vue.component('addUserComponent', {
   props: ['info'],
+  mixins: [formMixin],
   data(){
     return{
       optActive: false,

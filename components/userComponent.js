@@ -1,4 +1,5 @@
 var userData = getData('Api/user/', 'post', '');
+var roleData = getData('Api/role', 'post', '')
 console.log(userData)
 var overlayData;
 var stringsData = getString();
@@ -8,20 +9,21 @@ var titleArr = [
   ['帳號', 'act'],
   ['名稱', 'name']
 ];
-var roleArr = [
-  '系統管理者',
-  '未啟用',
-  '品保人員',
-  '研發人員'
-];
-
+var roleId = {};
+var roleArr = [];
+for(i in roleData){
+  roleArr.push(roleData[i].title)
+  roleId[roleData[i].id] = roleData[i].title
+}
 Vue.component('userComponent', {
   props: ['updatePager'],
-  mixins: [tableMixin],
+  mixins: [tableMixin, formMixin],
   data() {
     return {
       list: userData,
       titleArr,
+      role:roleData,
+      roleId,
       roleArr,
       itemFrom: 0,
       itemTo: 14,
@@ -33,7 +35,7 @@ Vue.component('userComponent', {
   <div class="width-limiter">
     <div class="heading">
       <h2>帳號管理</h2>
-      <a class="btn-box blue" href="javascript:;" @click="add(roleArr)">新增</a>
+      <button class="btn-box blue" @click="add(roleArr)" :disabled="!(checkPermission('User', 'ins'))" :title="!(checkPermission('User', 'ins')) ? '權限不足' : ''">新增</button>
     </div>
     <div class="table-filter" @click="showFilterDropdown ? showFilterDropdown=false : showFilterDropdown=true">{{titleArr[primary][0]}}</div>
     <table class="table-st1">
@@ -55,13 +57,13 @@ Vue.component('userComponent', {
           </td>
           <td>
             <div class="custom-select bordered">
-              <h3 class="ttl" @click="optActive = optActive >= 0 ? undefined : listIndex">
-                {{roleArr[item['role_id'] - 1]}}
+              <h3 class="ttl" @click="checkPermission('User', 'upd') ? (optActive = optActive >= 0 ? undefined : listIndex) : permissionDeny()">
+                {{roleId[item['role_id']]}}
               </h3>
               <ul class="opt" v-show="optActive == listIndex">
                 <li 
                   v-for="(opt, index) in roleArr"
-                  @click="updateRole(item['id'], index+1, listIndex)"
+                  @click="updateRole(item['id'], role[index].id, listIndex)"
                 >
                   {{opt}}
                 </li>
@@ -71,7 +73,7 @@ Vue.component('userComponent', {
           </td>
           <td>
             <ul class="btns flex center">
-              <li><a class="btn-box red small"  href="javascript:;" @click="$emit('overlay', 'delUser', item['id'])">刪除</a></li>
+              <li><button class="btn-box red small"  href="javascript:;" @click="$emit('overlay', 'delUser', item['id'])" :disabled="!(checkPermission('User', 'del'))" :title="!(checkPermission('User', 'del')) ? '權限不足' : ''">刪除</button></li>
             </ul>
           </td>
         </tr>
@@ -82,6 +84,7 @@ Vue.component('userComponent', {
   methods: {
 
     previewInspect(item) {
+      
       vm.loadingVisible = true;
       setTimeout(() => {
 
