@@ -20,7 +20,7 @@ Vue.component('userComponent', {
   mixins: [tableMixin, formMixin],
   data() {
     return {
-      list: userData,
+      list: {},
       titleArr,
       role:roleData,
       roleId,
@@ -73,6 +73,7 @@ Vue.component('userComponent', {
           </td>
           <td>
             <ul class="btns flex center">
+            <li><button class="btn-box blue small"  href="javascript:;" @click="$emit('overlay', 'addUser', item['id'])" :disabled="!(checkPermission('User', 'upd'))" :title="!(checkPermission('User', 'upd')) ? '權限不足' : ''">編輯</button></li>
               <li><button class="btn-box red small"  href="javascript:;" @click="$emit('overlay', 'delUser', item['id'])" :disabled="!(checkPermission('User', 'del'))" :title="!(checkPermission('User', 'del')) ? '權限不足' : ''">刪除</button></li>
             </ul>
           </td>
@@ -92,7 +93,7 @@ Vue.component('userComponent', {
       }, 1)
     },
     add(r) {
-      this.$emit('overlay', 'addUser', r)
+      this.$emit('overlay', 'addUser')
     },
     modify(info) {
       console.log(`${host}post.html${info['p_number']}/${info['b_number']}/${info['s_number']}`)
@@ -123,6 +124,9 @@ Vue.component('userComponent', {
   },
   computed: {
 
+  },
+  beforeMount(){
+    this.list = getData('Api/user/', 'post', '');
   },
   mounted() {}
 });

@@ -682,57 +682,70 @@ Vue.component('alertMsgComponent', {
     }
   }
 })
+
+var roleData = getData('Api/role', 'post', '')
+var roleId = {};
+for(i in roleData){
+  roleId[roleData[i].id] = roleData[i].title
+}
 Vue.component('addUserComponent', {
   props: ['info'],
   mixins: [formMixin],
   data(){
     return{
       optActive: false,
+      roleId,
+      role:'',
       formData:{
-        role:"未啟用",
+        status:0,
+        role_id:"",
         name:"",
-        account:"",
-        password:"",
-        email:""
+        act:"",
+        pwd:"",
+        mail:""
       }
     }
   },
   template: `
   <div>
-    <form class="form-st1" action="/si/Api/addUser" method="post" @submit.prevent="onSubmit">
+    <form class="form-st1" action="/si/Api/upUser" method="post" @submit.prevent="onSubmit">
       <ul class="btns pl10 pr10 flex end">
         <li><button class="btn-box blue" type="submit">儲存</button></li>
       </ul>
       <div class="custom-input">
         <ul>
-        <li>
-          <h3 class="ttl">角色名稱</h3>
-          <div class="custom-select">
-            <h3 class="ttl" 
-              @click="optActive ? optActive = false : optActive = true"
-            >{{formData.role}}</h3>
-            <ul class="opt" v-show="optActive">
-              <li v-for="item in info" @click="updateRole(item)">
-                {{item}}
-              </li>
-            </ul>
-          </div>
-        </li>
+          <li class="custom-checkbox">
+            <h3 class="ttl">啟用狀態</h3>
+            <input type="checkbox" v-model="formData.status"/>
+          </li>
+          <li>
+            <h3 class="ttl">角色名稱</h3>
+            <div class="custom-select">
+              <h3 class="ttl" 
+                @click="optActive ? optActive = false : optActive = true"
+              >{{role}}</h3>
+              <ul class="opt" v-show="optActive">
+                <li v-for="(item, id) in roleId" @click="updateRole(id)">
+                  {{item}}
+                </li>
+              </ul>
+            </div>
+          </li>
           <li>
             <h3 class="ttl">姓名</h3>
             <input type="text" v-model="formData.name"/>
           </li>
           <li>
             <h3 class="ttl">帳號</h3>
-            <input type="text" v-model="formData.account">
+            <input type="text" v-model="formData.act" :readonly="info">
           </li>
           <li>
             <h3 class="ttl">密碼</h3>
-            <input type="password" v-model="formData.password">
+            <input type="password" v-model="formData.pwd">
           </li>
           <li>
             <h3 class="ttl">信箱</h3>
-            <input type="email" v-model="formData.email">
+            <input type="email" v-model="formData.mail">
           </li>
           
         </ul>
@@ -741,9 +754,25 @@ Vue.component('addUserComponent', {
   </div>
   `,
   methods:{
-    updateRole(item){
-      this.formData.role = item;
+    updateRole(id){
       this.optActive = false;
+      this.role = roleId[id]
+      this.formData.role_id = id
+    }
+  },
+  updated(){
+    this.formData.status = this.formData.status ? +this.formData.status : 0;
+  },
+  beforeMount(){
+    if(this.info){
+      var userData = getData('Api/getuser/' + this.info, 'post', '');
+      console.log(userData);
+      for(key in this.formData){
+        this.formData[key] = userData[key];
+      }
+      this.formData.status = parseInt(this.formData.status)
+      this.formData.user_id = userData.id;
+      this.role = this.roleId[userData.role_id];
     }
   }
 })

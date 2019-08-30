@@ -101,7 +101,13 @@ var formMixin = {
       let overlayData = this.overlayData;
       let token = getToken();
       let arr = [];
+      let data = undefined;
       let apiUrl = e.target.action;
+      console.log(compName)
+      if (compName == 'addUserComponent'){
+        data = this.formData;
+        console.log(data)
+      }
       if (compName == 'addFormComponent') {
         for (key in overlayData) {
           // console.log(`${key}=${overlayData[key]}`)
@@ -188,11 +194,11 @@ var formMixin = {
           }
         });
       } else {
-        console.log(str)
+        var apiData = str ? decodeURI(str) : data;
         $.ajax({
           url: apiUrl,
           type: 'post',
-          data: decodeURI(str),
+          data: apiData,
           cache: false,
           beforeSend: function(xhr) {
             xhr.setRequestHeader("Authorization", "Bearer " + token);
@@ -200,7 +206,9 @@ var formMixin = {
           success: function(data) {
             if (compName == 'postComponent') {
               location.href = `${host}report.html`
-            } else {
+            } else if(compName == 'addUserComponent'){
+              location.href = `${host}user.html`
+            }else {
               that.$root.overlayVisible = false;
               that.$root.alertMsg('success')
             }
